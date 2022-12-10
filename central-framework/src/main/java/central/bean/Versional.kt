@@ -22,11 +22,31 @@
  * SOFTWARE.
  */
 
-package central.bean;
+package central.bean
 
 /**
+ * Versional Entity
+ *
+ * 版本化的实体
+ *
  * @author Alan Yeh
- * @since 2022/12/07
+ * @since 2022/12/09
  */
-public interface Available {
+interface Versional {
+    /**
+     * 版本号
+     */
+    var version: Int?
+
+    /**
+     * 递增版本号
+     */
+    fun increaseVersion() {
+        val version = this.version
+        if (version == null) {
+            this.version = 1
+        } else {
+            this.version = version + 1
+        }
+    }
 }

@@ -138,6 +138,30 @@ class Assertx private constructor() {
         }
 
         /**
+         * var value = Assertx.requireNull(nullableValue, "The value must null")
+         */
+        fun <R> requireNull(any: R?, message: String): R {
+            must(any != null, ::IllegalArgumentException, message)
+            return any!!
+        }
+
+        /**
+         * var value = Assertx.requireNull(nullableValue, ::IllegalArgumentException, "The value must null")
+         */
+        fun <R, E : Throwable> requireNull(any: R?, throwable: Function<String?, E>, message: String): R? {
+            must(any != null, throwable, message)
+            return any!!
+        }
+
+        /**
+         * var value = Assertx.requireNull(nullableValue)  { IllegalArgumentException("The value must null") }
+         */
+        fun <R, E : Throwable> requireNull(any: R?, throwable: Supplier<E>): R? {
+            must(any != null, throwable)
+            return any!!
+        }
+
+        /**
          * Assertx.mustNull(value, "Expect null value")
          */
         fun mustNull(expected: Any?, message: String) {
