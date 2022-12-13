@@ -1,0 +1,7 @@
+{
+  "name": "require",
+  "class": "central.android.bridge.component.require.RequireComponent",
+  "instantiate": true,
+  "singleton": true,
+  "identifier": "unique-require-component"
+}

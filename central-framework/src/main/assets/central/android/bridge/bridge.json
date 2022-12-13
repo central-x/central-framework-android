@@ -1,0 +1,33 @@
+{
+  "components": {
+    "album": {},
+    "app": {},
+    "db": {
+      "debug": true,
+      "updates": {}
+    },
+    "event": {},
+    "file": {},
+    "http": {
+      "timeout": 10000,
+      "baseUrl": "",
+      "encoding": "UTF-8",
+      "cookies": [],
+      "headers": {}
+    },
+    "logger": {
+      "console": true,
+      "level": ["ERROR", "DEBUG", "WARN", "INFO"],
+      "naming": "yyyy-MM-dd/HH_00",
+      "encoding": "UTF-8",
+      "keep": 7
+    },
+    "model": {},
+    "phone": {},
+    "require": {},
+    "sms": {},
+    "storage": {},
+    "system": {},
+    "window": {}
+  }
+}

@@ -4,14 +4,17 @@ plugins {
     id("maven-publish")
 }
 
+version = "1.0.0"
+
 android {
     namespace = "central.android"
-    compileSdk = 33
-    buildToolsVersion = "33.0.1"
+    compileSdk = project.ext.get("android.compileSdk").toString().toInt()
+    buildToolsVersion = project.ext.get("android.buildToolsVersion").toString()
 
     defaultConfig {
-        minSdk = 28
-        targetSdk = 33
+        minSdk = project.ext.get("android.minSdk").toString().toInt()
+        targetSdk = project.ext.get("android.targetSdk").toString().toInt()
+        buildConfigField("String", "VERSION", "\"${project.version}\"")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles.add(file("consumer-rules.pro"))
@@ -36,9 +39,13 @@ android {
 }
 
 dependencies {
+    api("androidx.multidex:multidex:2.0.1")
+    implementation("com.squareup.okhttp3:okhttp:4.10.0")
     implementation("androidx.core:core-ktx:1.7.0")
     implementation("androidx.appcompat:appcompat:1.4.1")
     implementation("com.google.android.material:material:1.5.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.1")
+    implementation("androidx.core:core-ktx:+")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.3")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.4.0")
@@ -70,7 +77,7 @@ publishing {
     repositories {
         maven {
             name = "release"
-            url = uri("https://deploy.yeh.cn/repository/maven-releases/")
+            url = uri("https://deploy.central-x.com/repository/maven-releases/")
             credentials {
                 username = "admin"
                 password = "showme"
@@ -78,7 +85,7 @@ publishing {
         }
         maven {
             name = "snapshot"
-            url = uri("https://deploy.yeh.cn/repository/maven-snapshots/")
+            url = uri("https://deploy.central-x.com/repository/maven-snapshots/")
             credentials {
                 username = "admin"
                 password = "showme"

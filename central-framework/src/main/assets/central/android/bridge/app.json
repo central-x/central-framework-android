@@ -1,0 +1,4 @@
+{
+  "name": "app",
+  "class": "central.android.bridge.component.app.AppComponent"
+}

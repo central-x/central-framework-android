@@ -1,5 +1,8 @@
 pluginManagement {
     repositories {
+        maven {
+            url = uri("https://mirror.central-x.com/repository/maven-public/")
+        }
         gradlePluginPortal()
         google()
         mavenCentral()
@@ -10,7 +13,7 @@ dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
         maven {
-            url = uri("https://mirror.yeh.cn/repository/maven-public/")
+            url = uri("https://mirror.central-x.com/repository/maven-public/")
         }
         google()
         mavenCentral()

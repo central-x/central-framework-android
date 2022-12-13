@@ -1,0 +1,7 @@
+{
+  "name": "event",
+  "class": "central.android.bridge.component.event.EventComponent",
+  "instantiate": true,
+  "singleton": true,
+  "identifier": "unique-event-component"
+}
