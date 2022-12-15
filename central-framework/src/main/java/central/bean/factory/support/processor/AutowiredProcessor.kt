@@ -165,15 +165,15 @@ class AutowiredProcessor(private val applicationContext: ApplicationContext) : B
 
                     val injectBean = if (qualifier != null) {
                         if (autowired?.required != false) {
-                            this.applicationContext.requireBean(qualifier.value, method.parameters[0].type)
+                            this.applicationContext.requireBean(qualifier.value, method.parameters[index].type)
                         } else {
-                            this.applicationContext.getBean(qualifier.value, method.parameters[0].type)
+                            this.applicationContext.getBean(qualifier.value, method.parameters[index].type)
                         }
                     } else {
                         if (autowired?.required != false) {
-                            this.applicationContext.requireBean(method.parameters[0].type)
+                            this.applicationContext.requireBean(method.parameters[index].type)
                         } else {
-                            this.applicationContext.getBean(method.parameters[0].type)
+                            this.applicationContext.getBean(method.parameters[index].type)
                         }
                     }
 

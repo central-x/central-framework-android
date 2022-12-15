@@ -238,11 +238,32 @@ class GenericListableBeanFactory(private vararg val sources: Class<*>) : Configu
         return getBean(definition) as T
     }
 
+    @Suppress("UNCHECKED_CAST")
     override fun <T> getBean(requiredType: Class<T>): T? {
-        val beans = this.getBeansOfType(requiredType)
-        // 出现多个候选，无法返回
-        Assertx.mustTrue(beans.size <= 1, ::NoUniqueBeanDefinitionException, "Multi candidates for type '${requiredType.name}': " + beans.keys.joinToString { ", " })
-        return beans.values.firstOrNull()
+        val beans = this.getBeanNamesForType(requiredType)
+        if (beans.isEmpty()) {
+            return null
+        } else if (beans.size == 1) {
+            return this.getBean(beans.first(), requiredType)
+        } else {
+            // 出现多个候选，根据 primary 决定返回的 Bean
+            var primaryBean: BeanDefinition? = null
+            for (name in beans) {
+                val definition = this.getDefinition(name) ?: continue
+                if (definition.primary) {
+                    if (primaryBean != null) {
+                        // 出现多个 primary
+                        throw NoUniqueBeanDefinitionException("No qualifying bean of type '${requiredType.name}' available: expected single matching bean but found ${beans.size}: ${beans.joinToString()}")
+                    }
+                    primaryBean = definition
+                }
+            }
+            if (primaryBean == null) {
+                // 没有 primary
+                throw NoUniqueBeanDefinitionException("No qualifying bean of type '${requiredType.name}' available: expected single matching bean but found ${beans.size}: ${beans.joinToString()}")
+            }
+            return this.getBean(primaryBean) as T
+        }
     }
 
     override fun containsBean(name: String): Boolean {

@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package central.demo.data
+package central.android.test.bean.data
 
 /**
  * 部门

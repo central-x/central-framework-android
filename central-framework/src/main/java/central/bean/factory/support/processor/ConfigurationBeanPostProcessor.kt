@@ -32,6 +32,7 @@ import central.bean.factory.support.GenericBeanDefinition
 import central.bean.factory.support.RootBeanDefinition
 import central.io.ResourceLoader
 import central.io.support.ClassPathResourceLoader
+import java.util.*
 
 /**
  * 用于处理配置类
@@ -90,7 +91,7 @@ class ConfigurationBeanPostProcessor : BeanFactoryPostProcessor, Prioritized {
     }
 
     private fun resolve(registry: BeanDefinitionRegistry, configuration: BeanDefinition) {
-        if (!configuration.type.isAnnotationPresent(Configuration::class.java)){
+        if (!configuration.type.isAnnotationPresent(Configuration::class.java)) {
             // 如果不是配置类的话，就不解析
             return
         }
@@ -158,13 +159,18 @@ class ConfigurationBeanPostProcessor : BeanFactoryPostProcessor, Prioritized {
 
             // 从配置文件中引用 Bean
             for (resourceLoader in processor.resourceLoaders) {
-                val imports = resourceLoader.getResources("central/${definition.type.name}.imports")
+                val imports = resourceLoader.getResources("META-INF/${definition.type.name}.imports")
                 for (resource in imports) {
                     if (resource.isExists()) {
-                        resource.getInputStream()?.bufferedReader()?.readLines()?.forEach {
-                            val klass = Class.forName(it)
-                            val component = RootBeanDefinition(klass, ConstructorInvokingFactoryBean(klass))
-                            definitions.add(component)
+                        val properties = Properties()
+                        properties.load(resource.getInputStream())
+                        val imported = properties.getProperty("imports")
+                        if (!imported.isNullOrBlank()) {
+                            imported.split(",").map { it.trim() }.forEach {
+                                val klass = Class.forName(it)
+                                val component = RootBeanDefinition(klass, ConstructorInvokingFactoryBean(klass))
+                                definitions.add(component)
+                            }
                         }
                     }
                 }

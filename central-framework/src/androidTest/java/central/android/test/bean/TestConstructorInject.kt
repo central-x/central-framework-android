@@ -22,31 +22,30 @@
  * SOFTWARE.
  */
 
-package central.demo.data
+package central.android.test.bean
+
+import android.app.Application
+import android.util.Log
+import androidx.test.core.app.ApplicationProvider
+import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.filters.SmallTest
+import org.junit.Test
+import org.junit.runner.RunWith
 
 /**
- * 帐户
+ * 测试构造函数注入
  *
  * @author Alan Yeh
  * @since 2023/02/14
  */
-class Account {
-    /**
-     * 主键
-     */
-    var id: String? = null
+@SmallTest
+@RunWith(AndroidJUnit4::class)
+class TestConstructorInject {
 
-    /**
-     * 部门主键
-     */
-    var departmentId: String? = null
+    @Test
+    fun test1() {
+        val application = ApplicationProvider.getApplicationContext<Application>()
 
-    /**
-     * ukb u
-     */
-    var department: Department? = null
-
-    var name: String? = null
-
-    var age: Int? = null
+        Log.d("test", "test")
+    }
 }

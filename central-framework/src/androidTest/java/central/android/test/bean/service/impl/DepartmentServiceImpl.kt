@@ -22,27 +22,31 @@
  * SOFTWARE.
  */
 
-package central.android
+package central.android.test.bean.service.impl
 
-import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.platform.app.InstrumentationRegistry
-
-import org.junit.Test
-import org.junit.runner.RunWith
-
-import org.junit.Assert.*
+import central.android.test.bean.data.Department
+import central.android.test.bean.service.DepartmentService
+import central.bean.factory.Autowired
+import central.bean.factory.config.Component
+import java.util.*
 
 /**
- * Instrumented test, which will execute on an Android device.
+ * 部门服务
  *
- * See [testing documentation](http://d.android.com/tools/testing).
+ * @author Alan Yeh
+ * @since 2023/02/14
  */
-@RunWith(AndroidJUnit4::class)
-class ExampleInstrumentedTest {
-    @Test
-    fun useAppContext() {
-        // Context of the app under test.
-        val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        assertEquals("com.example.myapplication", appContext.packageName)
+@Component
+class DepartmentServiceImpl : DepartmentService {
+
+    @Autowired
+    private lateinit var accountService: AccountServiceImpl
+
+    override fun findById(id: String): Department {
+        val department = Department()
+        department.id = id
+        department.name = "开发 ${Random(System.currentTimeMillis()).nextInt(10)} 部"
+        department.accounts = accountService.findByDepartment(department)
+        return department
     }
 }

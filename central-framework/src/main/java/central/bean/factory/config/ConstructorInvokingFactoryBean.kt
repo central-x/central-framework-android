@@ -82,7 +82,7 @@ class ConstructorInvokingFactoryBean<T>(private val type: Class<T>) : FactoryBea
         // 其次使用参数多的构造函数
         candidates.sortedBy { it.parameterCount + if (it.isAnnotationPresent(Autowired::class.java)) 10000 else 0 }
 
-        return candidates.first() as Constructor<T>
+        return candidates.last() as Constructor<T>
     }
 
     private fun resolveParameters(constructor: Constructor<T>): Array<Any?> {

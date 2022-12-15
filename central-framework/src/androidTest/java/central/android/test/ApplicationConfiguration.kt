@@ -22,13 +22,9 @@
  * SOFTWARE.
  */
 
-package central.demo
+package central.android.test
 
 import central.bean.factory.config.Configuration
-import central.bean.factory.config.Import
-import central.demo.service.AccountService
-import central.demo.service.DepartmentService
-import central.demo.service.TestService
 
 /**
  * 应用配置
@@ -37,7 +33,7 @@ import central.demo.service.TestService
  * @since 2022/12/19
  */
 @Configuration
-@Import([AccountService::class, DepartmentService::class, TestService::class])
+//@Import([AccountServiceImpl::class, DepartmentServiceImpl::class, TestService::class])
 class ApplicationConfiguration {
 
 }

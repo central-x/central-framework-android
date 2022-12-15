@@ -30,7 +30,6 @@ import androidx.multidex.MultiDex
 import central.android.AndroidApplication
 import central.bean.context.ConfigurableApplicationContext
 import central.bean.factory.config.Configuration
-import central.bean.factory.config.Import
 
 /**
  * Example Application
@@ -39,7 +38,6 @@ import central.bean.factory.config.Import
  * @since 2022/12/19
  */
 @Configuration
-@Import([ApplicationConfiguration::class])
 class ExampleApplication: Application() {
 
     private lateinit var applicationContext: ConfigurableApplicationContext
@@ -51,8 +49,8 @@ class ExampleApplication: Application() {
     }
 
     override fun onCreate() {
-        super.onCreate()
         applicationContext = AndroidApplication.run(this)
+        super.onCreate()
     }
 
     override fun onTerminate() {

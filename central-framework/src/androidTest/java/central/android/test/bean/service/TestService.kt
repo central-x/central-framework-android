@@ -22,36 +22,44 @@
  * SOFTWARE.
  */
 
-package central.demo.service
+package central.android.test.bean.service
 
+import android.util.Log
+import central.bean.context.ApplicationContext
+import central.bean.context.ApplicationContextAware
+import central.bean.factory.InitializingBean
 import central.bean.factory.config.Component
-import central.demo.data.Account
-import central.demo.data.Department
 import java.util.*
 
 /**
- * 帐户服务
+ * 测试服务
  *
  * @author Alan Yeh
  * @since 2023/02/14
  */
 @Component
-class AccountService {
+class TestService() : ApplicationContextAware, InitializingBean {
+    override lateinit var applicationContext: ApplicationContext
+
+    constructor(accountService: AccountService, departmentService: DepartmentService) : this() {
+        this.accountService = accountService
+        this.departmentService = departmentService
+    }
+
+    //    @set:Autowired
+    lateinit var accountService: AccountService
+
+    //    @set:Autowired
+    lateinit var departmentService: DepartmentService
 
 //    @Autowired
-//    private lateinit var departmentService: DepartmentService
+//    fun inject(accountService: AccountService, departmentService: DepartmentService) {
+//        this.accountService = accountService
+//        this.departmentService = departmentService
+//    }
 
-    fun findByDepartment(department: Department): List<Account> {
-        val accounts = mutableListOf<Account>()
-        for (index in 0..9){
-            val account = Account()
-            account.id = UUID.randomUUID().toString()
-            account.name = "张 $index"
-            account.age = index
-            account.departmentId = department.id
-            account.department = department
-            accounts.add(account)
-        }
-        return accounts
+    override fun initialize() {
+        val department = this.departmentService.findById(UUID.randomUUID().toString())
+        Log.d("TestService", "test")
     }
 }

@@ -1,0 +1,3 @@
+imports=central.android.test.bean.service.impl.AccountServiceImpl,\
+  central.android.test.bean.service.impl.DepartmentServiceImpl,\
+  central.android.test.bean.service.TestService

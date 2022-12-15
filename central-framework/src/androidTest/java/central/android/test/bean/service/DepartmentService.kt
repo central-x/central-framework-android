@@ -22,36 +22,16 @@
  * SOFTWARE.
  */
 
-package central.android.promise
+package central.android.test.bean.service
 
-import android.util.Log
-import androidx.test.ext.junit.runners.AndroidJUnit4
-import org.junit.Assert
-import org.junit.Test
-import org.junit.runner.RunWith
-import java.util.concurrent.CountDownLatch
+import central.android.test.bean.data.Department
 
 /**
- * Promise Test Cases
+ * 部门服务
  *
  * @author Alan Yeh
- * @since 2022/12/07
+ * @since 2023/02/14
  */
-@RunWith(AndroidJUnit4::class)
-class TestPromise {
-    @Test
-    fun case1(){
-        val latch = CountDownLatch(1)
-
-        Promise.async {
-            Log.d("promise", "async")
-        }.then {
-            Assert.assertTrue(true)
-            Log.d("promise", "sync")
-
-            latch.countDown()
-        }
-
-        latch.await()
-    }
+interface DepartmentService {
+    fun findById(id: String): Department
 }

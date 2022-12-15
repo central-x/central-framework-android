@@ -22,32 +22,24 @@
  * SOFTWARE.
  */
 
-package central.demo.service
+package central.android.test
 
-import android.util.Log
-import central.bean.context.ApplicationContext
-import central.bean.context.ApplicationContextAware
-import central.bean.factory.Autowired
-import central.bean.factory.InitializingBean
-import central.bean.factory.config.Component
+import android.app.Application
+import android.content.Context
+import androidx.test.runner.AndroidJUnitRunner
 
 /**
- * 测试服务
+ * 自定义 Android Application
  *
  * @author Alan Yeh
- * @since 2023/02/14
+ * @since 2023/02/15
  */
-@Component
-class TestService: ApplicationContextAware, InitializingBean {
-    override lateinit var applicationContext: ApplicationContext
+class JUnitRunner: AndroidJUnitRunner() {
 
-    @Autowired
-    private lateinit var accountService: AccountService
-
-    @Autowired
-    private lateinit var departmentService: DepartmentService
-
-    override fun initialize() {
-        Log.d("TestService", "test")
+    /**
+     * 使用自定用的 Application
+     */
+    override fun newApplication(cl: ClassLoader?, className: String?, context: Context?): Application {
+        return super.newApplication(cl, JUnitApplication::class.java.name, context)
     }
 }

@@ -22,30 +22,37 @@
  * SOFTWARE.
  */
 
-package central.demo.service
+package central.android.test.promise
 
-import central.bean.factory.Autowired
-import central.bean.factory.config.Component
-import central.demo.data.Department
-import java.util.*
+import android.util.Log
+import androidx.test.ext.junit.runners.AndroidJUnit4
+import central.android.promise.Promise
+import org.junit.Assert
+import org.junit.Test
+import org.junit.runner.RunWith
+import java.util.concurrent.CountDownLatch
 
 /**
- * 部门服务
+ * Promise Test Cases
  *
  * @author Alan Yeh
- * @since 2023/02/14
+ * @since 2022/12/07
  */
-@Component
-class DepartmentService {
+@RunWith(AndroidJUnit4::class)
+class TestPromise {
+    @Test
+    fun case1(){
+        val latch = CountDownLatch(1)
 
-    @Autowired
-    private lateinit var accountService: AccountService
+        Promise.async {
+            Log.d("promise", "async")
+        }.then {
+            Assert.assertTrue(true)
+            Log.d("promise", "sync")
 
-    fun findById(id: String): Department {
-        val department = Department()
-        department.id = UUID.randomUUID().toString()
-        department.name = "开发 ${Random(System.currentTimeMillis()).nextInt(10)} 部"
-        department.accounts = accountService.findByDepartment(department)
-        return department
+            latch.countDown()
+        }
+
+        latch.await()
     }
 }
