@@ -46,7 +46,7 @@ import central.io.support.ClassPathResourceLoader
  * @since 2023/01/31
  */
 open class AndroidApplicationContext : ConfigurableApplicationContext {
-    override val beanFactory: ConfigurableListableBeanFactory = GenericListableBeanFactory()
+    override val beanFactory: ConfigurableBeanFactory = GenericListableBeanFactory()
     override var environment: ConfigurableEnvironment = AndroidEnvironment()
 
     private val beanFactoryPostProcessors: MutableList<BeanFactoryPostProcessor> = mutableListOf()
@@ -97,9 +97,6 @@ open class AndroidApplicationContext : ConfigurableApplicationContext {
         this.beanFactory.registerResolvableDependency(BeanFactory::class.java, this)
         this.beanFactory.registerResolvableDependency(ResourceLoader::class.java, this)
         this.beanFactory.registerResolvableDependency(ApplicationEventPublisher::class.java, this)
-
-        // 注册环境变量的 Bean
-        this.beanFactory.registerSingleton("environment", this.environment)
     }
 
     /**

@@ -28,7 +28,6 @@ import android.app.Application
 import android.content.Context
 import androidx.multidex.MultiDex
 import central.android.AndroidApplication
-import central.bean.context.ConfigurableApplicationContext
 import central.bean.factory.config.Configuration
 
 /**
@@ -38,9 +37,7 @@ import central.bean.factory.config.Configuration
  * @since 2022/12/19
  */
 @Configuration
-class ExampleApplication: Application() {
-
-    private lateinit var applicationContext: ConfigurableApplicationContext
+class ExampleApplication : Application() {
 
     override fun attachBaseContext(base: Context?) {
         super.attachBaseContext(base)
@@ -49,12 +46,12 @@ class ExampleApplication: Application() {
     }
 
     override fun onCreate() {
-        applicationContext = AndroidApplication.run(this)
+        AndroidApplication.run(this)
         super.onCreate()
     }
 
     override fun onTerminate() {
-        AndroidApplication.stop(this.applicationContext)
+        AndroidApplication.stop()
         super.onTerminate()
     }
 }

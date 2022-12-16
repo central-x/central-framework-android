@@ -22,41 +22,19 @@
  * SOFTWARE.
  */
 
-package central.bean.factory
+package central.android.test.bean.service
+
+import central.android.test.bean.service.impl.AccountServiceImpl
+import central.android.test.bean.service.impl.DepartmentServiceImpl
+import central.bean.factory.config.Configuration
+import central.bean.factory.config.Import
 
 /**
- * 可枚举的 Bean 工厂
  *
  * @author Alan Yeh
- * @since 2022/12/14
+ * @since 2023/02/16
  */
-interface ListableBeanFactory : BeanFactory {
-
-    /**
-     * 获取所有符合指定类型的 Bean
-     *
-     * beanName -> bean
-     */
-    fun <T> getBeansOfType(requiredType: Class<T>): Map<String, T>
-
-    /**
-     * 获取所有符合指定类型的 Bean 名称
-     */
-    fun getBeanNamesForType(type: Class<*>): List<String>
-
-    /**
-     * 获取所有符合指定类型的 Bean 名称
-     *
-     * @param type Bean 类型
-     * @param includeNonSingletons 是否包含非单例的 Bean
-     * @param allowEagerInit 是否初始化
-     */
-    fun getBeanNamesForType(type: Class<*>, includeNonSingletons: Boolean, allowEagerInit: Boolean): List<String>
-
-    /**
-     * 获取所有带指定注解的 Bean
-     *
-     * beanName -> bean
-     */
-    fun getBeansWithAnnotations(annotationTypes: List<Class<out Annotation>>): Map<String, Any>
+@Configuration
+@Import(AccountServiceImpl::class, DepartmentServiceImpl::class)
+class ServiceConfiguration {
 }

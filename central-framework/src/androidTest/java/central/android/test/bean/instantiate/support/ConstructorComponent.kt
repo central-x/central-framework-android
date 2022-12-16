@@ -22,30 +22,22 @@
  * SOFTWARE.
  */
 
-package central.android.test.bean
+package central.android.test.bean.instantiate.support
 
-import android.app.Application
-import android.util.Log
-import androidx.test.core.app.ApplicationProvider
-import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.filters.SmallTest
-import org.junit.Test
-import org.junit.runner.RunWith
+import central.android.test.bean.data.Department
+import central.android.test.bean.service.DepartmentService
+import central.bean.factory.config.Component
 
 /**
- * 测试构造函数注入
+ * 有参造函数组件
  *
  * @author Alan Yeh
- * @since 2023/02/14
+ * @since 2023/02/16
  */
-@SmallTest
-@RunWith(AndroidJUnit4::class)
-class TestConstructorInject {
+@Component
+class ConstructorComponent(private val departmentService: DepartmentService) {
 
-    @Test
-    fun test1() {
-        val application = ApplicationProvider.getApplicationContext<Application>()
-
-        Log.d("test", "test")
+    fun findById(id: String): Department {
+        return departmentService.findById(id)
     }
 }

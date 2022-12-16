@@ -59,6 +59,13 @@ interface BeanDefinitionRegistry {
     fun getDefinition(name: String): BeanDefinition?
 
     /**
+     * 获取 Bean 定义
+     *
+     * @param predicate 用于返回指定条件的 Bean 定定
+     */
+    fun getDefinitions(predicate: (BeanDefinition) -> Boolean): List<BeanDefinition>
+
+    /**
      * 是否包含指定的 Bean 定义
      *
      * @param name Bean 名称

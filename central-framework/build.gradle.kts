@@ -16,7 +16,7 @@ android {
         targetSdk = project.ext.get("android.targetSdk").toString().toInt()
         buildConfigField("String", "VERSION", "\"${project.version}\"")
 
-        testInstrumentationRunner = "central.android.test.JUnitRunner"
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles.add(file("consumer-rules.pro"))
     }
 

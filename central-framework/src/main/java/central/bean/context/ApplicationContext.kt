@@ -24,7 +24,7 @@
 
 package central.bean.context
 
-import central.bean.factory.ListableBeanFactory
+import central.bean.factory.BeanFactory
 import central.env.EnvironmentCapable
 
 /**
@@ -33,4 +33,4 @@ import central.env.EnvironmentCapable
  * @author Alan Yeh
  * @since 2023/01/19
  */
-interface ApplicationContext : ListableBeanFactory, ApplicationEventPublisher, EnvironmentCapable
+interface ApplicationContext : BeanFactory, ApplicationEventPublisher, EnvironmentCapable

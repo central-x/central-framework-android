@@ -27,7 +27,9 @@ package central.android
 import android.app.Application
 import central.android.context.AndroidApplicationContext
 import central.android.env.AndroidEnvironment
+import central.bean.context.ApplicationContext
 import central.bean.context.ConfigurableApplicationContext
+import central.bean.factory.support.RootBeanDefinition
 import central.bean.factory.support.processor.*
 import central.env.ConfigurableEnvironment
 import central.io.ResourceLoader
@@ -43,20 +45,26 @@ import central.io.support.GenericResourceLoader
 class AndroidApplication(private val application: Application) {
 
     companion object {
+        /**
+         * 当前 Application Context
+         */
+        @JvmStatic
+        lateinit var applicationContext: ApplicationContext
+            private set
 
         /**
          * 启动一个新的应用
          */
         @JvmStatic
-        fun run(application: Application): ConfigurableApplicationContext {
-            return AndroidApplication(application).run()
+        fun run(application: Application, vararg sources: Class<*>) {
+            this.applicationContext = AndroidApplication(application).run(*sources)
         }
 
         /**
          * 停止
          */
         @JvmStatic
-        fun stop(applicationContext: ConfigurableApplicationContext) {
+        fun stop() {
             // 销毁 Bean 工厂
         }
     }
@@ -64,10 +72,10 @@ class AndroidApplication(private val application: Application) {
     /**
      * 运行应用
      */
-    fun run(): ConfigurableApplicationContext {
+    fun run(vararg sources: Class<*>): ConfigurableApplicationContext {
         val applicationEnvironment = prepareEnvironment()
         val resourceLoader = prepareResourceLoader()
-        val applicationContext = prepareContext(application, applicationEnvironment, resourceLoader)
+        val applicationContext = prepareContext(application, applicationEnvironment, resourceLoader, sources)
         return applicationContext.also {
             // 刷新上下文，完成上下文初始化
             it.refresh()
@@ -77,7 +85,7 @@ class AndroidApplication(private val application: Application) {
     /**
      * 准备上下文
      */
-    private fun prepareContext(application: Application, environment: ConfigurableEnvironment, resourceLoader: ResourceLoader): ConfigurableApplicationContext {
+    private fun prepareContext(application: Application, environment: ConfigurableEnvironment, resourceLoader: ResourceLoader, sources: Array<out Class<*>>): ConfigurableApplicationContext {
         val context: ConfigurableApplicationContext = AndroidApplicationContext()
         context.environment = environment
 
@@ -93,6 +101,11 @@ class AndroidApplication(private val application: Application) {
         context.beanFactory.addBeanPostProcessor(BeanNameAwareProcessor())
         context.beanFactory.addBeanPostProcessor(ResourceLoaderAwareProcessor(resourceLoader))
         context.beanFactory.addBeanPostProcessor(ApplicationListenerDetector(context))
+
+        // 注册用户自定义的组件
+        for (source in sources){
+            context.beanFactory.registry.registerDefinition(RootBeanDefinition(source))
+        }
 
         // 注册 BeanFactory 后置处理器
         context.addBeanFactoryPostProcessor(ConfigurationBeanPostProcessor())

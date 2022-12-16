@@ -34,14 +34,14 @@ import central.bean.factory.FactoryBean
  */
 interface BeanDefinition {
     /**
-     * 称称
-     */
-    val name: String
-
-    /**
      * Bean 类型
      */
     var type: Class<*>
+
+    /**
+     * 称称
+     */
+    val name: String
 
     /**
      * 是否单例

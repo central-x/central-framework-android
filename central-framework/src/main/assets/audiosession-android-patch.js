@@ -34,7 +34,7 @@
         }
 
         // 此函数用于向 Android 暴露接口，可以控制当前 WebView 已暂停的音乐继续播放
-        play(){
+        play() {
             if (this.audio) {
                 this.audio.play();
             }
@@ -52,13 +52,16 @@
         prompt("audio://play")
         audioSession.audio = this;
 
-        this.addEventListener('ended', function() {
-            prompt("audio://onended")
-        });
+        if (!this._hacked) {
+            this._hacked = true
+            this.addEventListener('ended', function() {
+                prompt("audio://onended")
+            });
 
-        this.addEventListener('pause', function() {
-             prompt("audio://onpause")
-        });
+            this.addEventListener('pause', function() {
+                prompt("audio://onpause")
+            });
+        }
 
         return this._play();
     }

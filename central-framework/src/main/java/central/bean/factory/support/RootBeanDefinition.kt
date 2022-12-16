@@ -24,7 +24,6 @@
 
 package central.bean.factory.support
 
-import central.bean.factory.BeanFactory
 import central.bean.factory.FactoryBean
 import central.bean.factory.config.*
 
@@ -34,62 +33,15 @@ import central.bean.factory.config.*
  * @author Alan Yeh
  * @since 2023/02/10
  */
-class RootBeanDefinition : BeanDefinition {
-    override val name: String
-    override var type: Class<*>
-    override var singleton: Boolean
-    override var lazyInit: Boolean
-    override var dependsOn: List<String>
-    override var primary: Boolean
-    override var factory: FactoryBean<*>
-
-    constructor(type: Class<*>, beanFactory: BeanFactory) {
-        this.name = type.simpleName.replaceFirstChar { it.lowercaseChar() }
-        this.type = type
-
-        // 判断是否单例
-        val scope = type.getAnnotation(Scope::class.java)
-        this.singleton = scope?.singleton ?: true
-
-        // 是否延迟初始化
-        val lazy = type.getAnnotation(LazyInit::class.java)
-        this.lazyInit = lazy?.value ?: false
-
-        // 依赖
-        val dependsOn = type.getAnnotation(DependsOn::class.java)
-        this.dependsOn = dependsOn?.value?.toList() ?: emptyList()
-
-        // 是否主类型
-        val primary = type.getAnnotation(Primary::class.java)
-        this.primary = primary != null
-
-        // 通过构造函数创建实例
-        this.factory = ConstructorInvokingFactoryBean(this.type)
-    }
-
-    constructor(type: Class<*>, factory: FactoryBean<*>) {
-        this.name = type.simpleName.replaceFirstChar { it.lowercaseChar() }
-        this.type = type
-
-        // 判断是否单例
-        val scope = type.getAnnotation(Scope::class.java)
-        this.singleton = scope?.singleton ?: true
-
-        // 是否延迟初始化
-        val lazy = type.getAnnotation(LazyInit::class.java)
-        this.lazyInit = lazy?.value ?: false
-
-        // 依赖
-        val dependsOn = type.getAnnotation(DependsOn::class.java)
-        this.dependsOn = dependsOn?.value?.toList() ?: emptyList()
-
-        // 是否主类型
-        val primary = type.getAnnotation(Primary::class.java)
-        this.primary = primary != null
-
-        // 通过指定工厂创建实例
-        this.factory = factory
-    }
+class RootBeanDefinition(
+    override var type: Class<*>,
+    override val name: String = type.simpleName.replaceFirstChar { it.lowercaseChar() },
+    override var singleton: Boolean = type.getAnnotation(Scope::class.java)?.singleton ?: true,
+    override var lazyInit: Boolean = type.getAnnotation(LazyInit::class.java)?.value ?: false,
+    override var dependsOn: List<String> = type.getAnnotation(DependsOn::class.java)?.value?.toList() ?: emptyList(),
+    override var primary: Boolean = type.getAnnotation(Primary::class.java) != null,
+    override var factory: FactoryBean<*> = ConstructorInvokingFactoryBean(type)
+) : BeanDefinition {
 
     override fun toString(): String {
         return "${RootBeanDefinition::class.java.simpleName}(name=${this.name}, type=${this.type.name}, singleton=${this.singleton}, lazy=${this.lazyInit}, dependsOn=${this.dependsOn}, primary=${this.primary})"

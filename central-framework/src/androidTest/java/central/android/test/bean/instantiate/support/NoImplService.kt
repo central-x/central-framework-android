@@ -22,43 +22,13 @@
  * SOFTWARE.
  */
 
-package central.bean.factory
-
-import central.bean.factory.config.BeanPostProcessor
+package central.android.test.bean.instantiate.support
 
 /**
- * 可配置的 Bean 工厂
+ * 无实现的服务
  *
  * @author Alan Yeh
- * @since 2023/02/01
+ * @since 2023/02/16
  */
-interface ConfigurableListableBeanFactory : ListableBeanFactory, ConfigurableBeanFactory {
-
-    /**
-     * 添加 Bean 后置处理器
-     */
-    fun addBeanPostProcessor(processor: BeanPostProcessor)
-
-    /**
-     * 移除 Bean 后置处理器
-     */
-    fun removeBeanPostProcessor(processor: BeanPostProcessor)
-
-    /**
-     * 清空 Bean 后置处理器
-     */
-    fun clearBeanPostProcessors()
-
-    /**
-     * 注册一个指定的依赖的值
-     * 这个方法用于处理那些没有注册成 Bean，但又需要被注入的值，如 ApplicationContext 这些
-     */
-    fun registerResolvableDependency(dependencyType: Class<*>, autowiredValue: Any?)
-
-    /**
-     * 初始化所有非延迟初始化的单例
-     *
-     * @see central.bean.factory.config.LazyInit
-     */
-    fun preInstantiateSingletons()
+interface NoImplService {
 }

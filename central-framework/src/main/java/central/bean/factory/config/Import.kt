@@ -10,9 +10,12 @@ import kotlin.reflect.KClass
  * @see Configuration
  * @see Component
  */
+@MustBeDocumented
+@Target(AnnotationTarget.CLASS)
+@Retention(AnnotationRetention.RUNTIME)
 annotation class Import(
     /**
      * 用于引入指定的类，包括 [Configuration] 、[Component]或常规的组件类
      */
-    val value: Array<KClass<*>>
+    vararg val value: KClass<*>
 )

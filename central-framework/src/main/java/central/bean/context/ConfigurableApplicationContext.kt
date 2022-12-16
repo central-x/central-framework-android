@@ -25,7 +25,7 @@
 package central.bean.context
 
 import central.bean.factory.BeanException
-import central.bean.factory.ConfigurableListableBeanFactory
+import central.bean.factory.ConfigurableBeanFactory
 import central.bean.factory.config.BeanFactoryPostProcessor
 import central.env.ConfigurableEnvironment
 
@@ -45,7 +45,7 @@ interface ConfigurableApplicationContext : ApplicationContext {
     /**
      * 获取 Bean 工厂
      */
-    val beanFactory: ConfigurableListableBeanFactory
+    val beanFactory: ConfigurableBeanFactory
 
     /**
      * 刷新应用上下文

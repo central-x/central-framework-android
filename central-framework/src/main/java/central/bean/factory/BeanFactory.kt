@@ -72,6 +72,34 @@ interface BeanFactory {
     }
 
     /**
+     * 获取所有符合指定类型的 Bean
+     *
+     * beanName -> bean
+     */
+    fun <T> getBeansOfType(requiredType: Class<T>): Map<String, T>
+
+    /**
+     * 获取所有符合指定类型的 Bean 名称
+     */
+    fun getBeanNamesForType(type: Class<*>): List<String>
+
+    /**
+     * 获取所有符合指定类型的 Bean 名称
+     *
+     * @param type Bean 类型
+     * @param includeNonSingletons 是否包含非单例的 Bean
+     * @param allowEagerInit 是否初始化
+     */
+    fun getBeanNamesForType(type: Class<*>, includeNonSingletons: Boolean, allowEagerInit: Boolean): List<String>
+
+    /**
+     * 获取所有带指定注解的 Bean
+     *
+     * beanName -> bean
+     */
+    fun getBeansWithAnnotations(annotationTypes: List<Class<out Annotation>>): Map<String, Any>
+
+    /**
      * 判断是否包含指定名称的 Bean
      */
     fun containsBean(name: String): Boolean

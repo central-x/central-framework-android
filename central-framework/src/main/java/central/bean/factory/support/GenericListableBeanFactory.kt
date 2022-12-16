@@ -24,7 +24,6 @@
 
 package central.bean.factory.support
 
-import central.bean.Validatable
 import central.bean.convert.ConversionService
 import central.bean.convert.support.GenericConversionService
 import central.bean.factory.*
@@ -38,11 +37,13 @@ import java.util.concurrent.ConcurrentHashMap
  * @author Alan Yeh
  * @since 2022/12/19
  */
-class GenericListableBeanFactory(private vararg val sources: Class<*>) : ConfigurableListableBeanFactory, BeanDefinitionRegistry {
+class GenericListableBeanFactory : ConfigurableBeanFactory {
 
     override var beanClassLoader: ClassLoader = Thread.currentThread().contextClassLoader ?: GenericListableBeanFactory::class.java.classLoader!!
 
     override var conversionService: ConversionService = GenericConversionService()
+
+    override var registry: BeanDefinitionRegistry = GenericBeanDefinitionRegistry()
 
     /**
      * 单例对象
@@ -88,16 +89,21 @@ class GenericListableBeanFactory(private vararg val sources: Class<*>) : Configu
     private fun getBean(definition: BeanDefinition): Any {
         return if (definition.singleton) {
             // 如果是单例的话，则从单例池里面获取实例
-            this.singletons.computeIfAbsent(definition.name) {
-                if (this.singletonsCurrentlyInCreation.contains(it)) {
+            synchronized(this.singletons) {
+                val singleton = this.singletons[definition.name]
+                if (singleton != null){
+                    return singleton
+                }
+
+                if (this.singletonsCurrentlyInCreation.contains(definition.name)) {
                     // 如果这个单例正在创建中，又来获取这个 Bean，则有可能出现创建多个单例的问题
                     throw BeanCreationException("Bean '${definition.name}' is in creation.")
                 }
                 try {
-                    this.singletonsCurrentlyInCreation.add(it)
+                    this.singletonsCurrentlyInCreation.add(definition.name)
                     this.createBean(definition)
                 } finally {
-                    this.singletonsCurrentlyInCreation.remove(it)
+                    this.singletonsCurrentlyInCreation.remove(definition.name)
                 }
             }
         } else {
@@ -127,7 +133,7 @@ class GenericListableBeanFactory(private vararg val sources: Class<*>) : Configu
     }
 
     override fun registerSingleton(name: String, instance: Any) {
-        this.definitions[name] = RootBeanDefinition(instance::class.java, InstanceFactoryBean(instance))
+        this.registry.registerDefinition(RootBeanDefinition(instance::class.java, factory = InstanceFactoryBean(instance)))
     }
 
     override fun destroySingletons() {
@@ -136,7 +142,7 @@ class GenericListableBeanFactory(private vararg val sources: Class<*>) : Configu
     }
 
     override fun clearBeans() {
-        TODO("Not yet implemented")
+        this.singletons.clear()
     }
 
     //---------------------------------------------------------------------
@@ -161,28 +167,15 @@ class GenericListableBeanFactory(private vararg val sources: Class<*>) : Configu
     }
 
     override fun preInstantiateSingletons() {
-        for (definition in this.definitions.values) {
-            if (definition.singleton) {
-                if (!this.singletons.containsKey(definition.name)) {
-                    // 创建 Bean
-                    val bean = this.createBean(definition)
-                    this.singletons[definition.name] = bean
-                }
-            }
-        }
+        this.registry.getDefinitions { definition -> definition.singleton }
+            .forEach(this::getBean)
     }
 
     @Suppress("UNCHECKED_CAST")
     override fun <T> getBeansOfType(requiredType: Class<T>): Map<String, T> {
-        val candidates = mutableMapOf<String, T>()
-
-        this.definitions.forEach { (name, definition) ->
-            if (definition.isTypeMatched(requiredType)) {
-                candidates[name] = getBean(definition) as T
-            }
-        }
-
-        return candidates
+        return this.registry.getDefinitions { definition ->
+            definition.isTypeMatched(requiredType)
+        }.associate { it.name to this.getBean(it) as T }
     }
 
     override fun getBeanNamesForType(type: Class<*>): List<String> {
@@ -190,126 +183,78 @@ class GenericListableBeanFactory(private vararg val sources: Class<*>) : Configu
     }
 
     override fun getBeanNamesForType(type: Class<*>, includeNonSingletons: Boolean, allowEagerInit: Boolean): List<String> {
-        val candidates = mutableListOf<String>()
+        val candidates = this.registry.getDefinitions { definition ->
+            definition.isTypeMatched(type)
+        }.filter { includeNonSingletons || it.singleton }
 
-        this.definitions.forEach { (name, definition) ->
-            if (definition.isTypeMatched(type)) {
-                if (includeNonSingletons) {
-                    // 如果要包含非单例，则所有类型匹配的 Bean 定义都加入候选
-                    candidates.add(name)
-                } else if (definition.singleton) {
-                    // 否则只将单例 Bean 加入候选
-                    candidates.add(name)
-                }
-            }
+        if (allowEagerInit) {
+            // 需要初始化
+            candidates.forEach(this::createBean)
         }
 
-        return candidates
+        return candidates.map { it.name }
     }
 
     override fun getBeansWithAnnotations(annotationTypes: List<Class<out Annotation>>): Map<String, Any> {
-        val candidates = mutableMapOf<String, Any>()
-
-        this.definitions.forEach { (name, definition) ->
-            for (annotation in annotationTypes) {
-                if (definition.type.isAnnotationPresent(annotation)) {
-                    // 只要有一个注解没有出现，则不列入候选
-                    break
-                }
-                // 所有注解都出现，加入候选列表
-                candidates[name] = getBean(definition)
-            }
+        val candidates = this.registry.getDefinitions { definition ->
+            // 所有的注解都需要出现
+            annotationTypes.all { annotation -> definition.type.isAnnotationPresent(annotation) }
         }
 
-        return candidates
+        return candidates.associate { it.name to this.getBean(it) }
     }
 
     @Suppress("UNCHECKED_CAST")
     override fun <T> getBean(name: String): T? {
-        val definition = this.definitions[name] ?: return null
+        val definition = this.registry.getDefinition(name) ?: return null
         return getBean(definition) as T
     }
 
 
     @Suppress("UNCHECKED_CAST")
     override fun <T> getBean(name: String, requiredType: Class<T>): T? {
-        val definition = this.definitions[name] ?: return null
+        val definition = this.registry.getDefinition(name) ?: return null
         Assertx.mustAssignableFrom(requiredType, definition.type, ::ClassCastException, "Cannot cast bean type of '${definition.type.name}' to '${requiredType.name}'")
         return getBean(definition) as T
     }
 
     @Suppress("UNCHECKED_CAST")
     override fun <T> getBean(requiredType: Class<T>): T? {
-        val beans = this.getBeanNamesForType(requiredType)
-        if (beans.isEmpty()) {
+        val beanNames = this.getBeanNamesForType(requiredType)
+        if (beanNames.isEmpty()) {
             return null
-        } else if (beans.size == 1) {
-            return this.getBean(beans.first(), requiredType)
+        } else if (beanNames.size == 1) {
+            return this.getBean(beanNames.first(), requiredType)
         } else {
             // 出现多个候选，根据 primary 决定返回的 Bean
             var primaryBean: BeanDefinition? = null
-            for (name in beans) {
-                val definition = this.getDefinition(name) ?: continue
+            for (name in beanNames) {
+                val definition = this.registry.getDefinition(name) ?: continue
                 if (definition.primary) {
                     if (primaryBean != null) {
                         // 出现多个 primary
-                        throw NoUniqueBeanDefinitionException("No qualifying bean of type '${requiredType.name}' available: expected single matching bean but found ${beans.size}: ${beans.joinToString()}")
+                        throw NoUniqueBeanDefinitionException("No qualifying bean of type '${requiredType.name}' available: expected single matching bean but found ${beanNames.size}: ${beanNames.joinToString()}")
                     }
                     primaryBean = definition
                 }
             }
             if (primaryBean == null) {
                 // 没有 primary
-                throw NoUniqueBeanDefinitionException("No qualifying bean of type '${requiredType.name}' available: expected single matching bean but found ${beans.size}: ${beans.joinToString()}")
+                throw NoUniqueBeanDefinitionException("No qualifying bean of type '${requiredType.name}' available: expected single matching bean but found ${beanNames.size}: ${beanNames.joinToString()}")
             }
             return this.getBean(primaryBean) as T
         }
     }
 
     override fun containsBean(name: String): Boolean {
-        return this.definitions.containsKey(name)
+        return this.registry.containsDefinition(name)
     }
 
     override fun getType(name: String): Class<*>? {
-        return this.definitions[name]?.type
+        return this.registry.getDefinition(name)?.type
     }
 
     override fun isTypeMatch(name: String, type: Class<*>): Boolean {
-        return this.definitions[name]?.isTypeMatched(type) == true
-    }
-
-    //---------------------------------------------------------------------
-    // Implementation of BeanDefinitionRegistry
-    //---------------------------------------------------------------------
-
-    /**
-     * Bean 定义
-     */
-    private val definitions = mutableMapOf<String, BeanDefinition>()
-    override fun getBeanDefinitionNames(): List<String> {
-        return definitions.keys.toList()
-    }
-
-    override fun registerDefinition(definition: BeanDefinition) {
-        // 校验
-        (definition as? Validatable)?.validate()
-
-        if (this.definitions.containsKey(definition.name)) {
-            throw BeanConflictException("Cannot register bean definition for bean '${definition.name}'")
-        }
-
-        this.definitions[definition.name] = definition
-    }
-
-    override fun removeDefinition(name: String) {
-        this.definitions.remove(name)
-    }
-
-    override fun getDefinition(name: String): BeanDefinition? {
-        return this.definitions[name]
-    }
-
-    override fun containsDefinition(name: String): Boolean {
-        return this.definitions.containsKey(name)
+        return this.registry.getDefinition(name)?.isTypeMatched(type) == true
     }
 }

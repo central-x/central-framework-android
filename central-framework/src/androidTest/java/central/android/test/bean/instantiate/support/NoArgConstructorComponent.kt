@@ -22,24 +22,48 @@
  * SOFTWARE.
  */
 
-package central.android.test
+package central.android.test.bean.instantiate.support
 
-import android.app.Application
-import android.content.Context
-import androidx.test.runner.AndroidJUnitRunner
+import central.android.test.bean.data.Department
+import central.android.test.bean.service.AccountService
+import central.android.test.bean.service.DepartmentService
+import central.bean.factory.Autowired
+import central.bean.factory.config.Component
 
 /**
- * 自定义 Android Application
+ * 无参构造函数组件
  *
  * @author Alan Yeh
- * @since 2023/02/15
+ * @since 2023/02/16
  */
-class JUnitRunner: AndroidJUnitRunner() {
+@Component
+class NoArgConstructorComponent {
 
     /**
-     * 使用自定用的 Application
+     * 通过字段注入
      */
-    override fun newApplication(cl: ClassLoader?, className: String?, context: Context?): Application {
-        return super.newApplication(cl, JUnitApplication::class.java.name, context)
+    @Autowired
+    lateinit var departmentService: DepartmentService
+
+    /**
+     * 通过 field 注入
+     */
+    @field:Autowired
+    private lateinit var departmentService2: DepartmentService
+
+    /**
+     * 通过 Setter 注入
+     */
+    @set:Autowired
+    lateinit var accountService: AccountService
+
+    /**
+     * 测试非必要的注入
+     */
+    @Autowired(required = false)
+    lateinit var noImplService: NoImplService
+
+    fun findById(id: String): Department {
+        return departmentService.findById(id)
     }
 }

@@ -25,7 +25,7 @@
 package central.bean.factory.config
 
 import central.bean.factory.BeanException
-import central.bean.factory.ConfigurableListableBeanFactory
+import central.bean.factory.ConfigurableBeanFactory
 
 /**
  * Factory 后置处理器
@@ -39,5 +39,5 @@ interface BeanFactoryPostProcessor {
      * 后置处理 Bean 工厂
      */
     @Throws(BeanException::class)
-    fun postProcessBeanFactory(beanFactory: ConfigurableListableBeanFactory)
+    fun postProcessBeanFactory(beanFactory: ConfigurableBeanFactory)
 }

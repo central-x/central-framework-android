@@ -25,6 +25,8 @@
 package central.bean.factory
 
 import central.bean.convert.ConversionService
+import central.bean.factory.config.BeanDefinitionRegistry
+import central.bean.factory.config.BeanPostProcessor
 
 /**
  * 可配置的 Bean 工厂
@@ -44,7 +46,11 @@ interface ConfigurableBeanFactory: BeanFactory {
      */
     var conversionService: ConversionService
 
-
+    /**
+     * Bean 定义注册中心
+     */
+    var registry: BeanDefinitionRegistry
+    
     /**
      * 销毁 Bean
      */
@@ -64,4 +70,32 @@ interface ConfigurableBeanFactory: BeanFactory {
      * 清空 Bean
      */
     fun clearBeans()
+
+    /**
+     * 注册一个指定的依赖的值
+     * 这个方法用于处理那些没有注册成 Bean，但又需要被注入的值，如 ApplicationContext 这些
+     */
+    fun registerResolvableDependency(dependencyType: Class<*>, autowiredValue: Any?)
+
+    /**
+     * 初始化所有非延迟初始化的单例
+     *
+     * @see central.bean.factory.config.LazyInit
+     */
+    fun preInstantiateSingletons()
+
+    /**
+     * 添加 Bean 后置处理器
+     */
+    fun addBeanPostProcessor(processor: BeanPostProcessor)
+
+    /**
+     * 移除 Bean 后置处理器
+     */
+    fun removeBeanPostProcessor(processor: BeanPostProcessor)
+
+    /**
+     * 清空 Bean 后置处理器
+     */
+    fun clearBeanPostProcessors()
 }

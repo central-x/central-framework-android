@@ -24,7 +24,7 @@
 
 package central.bean.factory.support.processor
 
-import central.bean.factory.ConfigurableListableBeanFactory
+import central.bean.factory.ConfigurableBeanFactory
 import central.bean.factory.Prioritized
 import central.bean.factory.config.*
 import central.bean.factory.support.BeanReference
@@ -62,11 +62,9 @@ class ConfigurationBeanPostProcessor : BeanFactoryPostProcessor, Prioritized {
      */
     private val resolvedConfigurations = mutableSetOf<String>()
 
-    override fun postProcessBeanFactory(beanFactory: ConfigurableListableBeanFactory) {
+    override fun postProcessBeanFactory(beanFactory: ConfigurableBeanFactory) {
         // 注册配置类产生的 Bean 定义
-        if (beanFactory is BeanDefinitionRegistry) {
-            this.postProcessBeanRegistry(beanFactory)
-        }
+        this.postProcessBeanRegistry(beanFactory.registry)
     }
 
     private fun postProcessBeanRegistry(registry: BeanDefinitionRegistry) {
@@ -138,7 +136,7 @@ class ConfigurationBeanPostProcessor : BeanFactoryPostProcessor, Prioritized {
 
             val import = definition.type.getAnnotation(Import::class.java) ?: return definitions
             for (klass in import.value) {
-                val component = RootBeanDefinition(klass.java, ConstructorInvokingFactoryBean(klass.java))
+                val component = RootBeanDefinition(klass.java)
                 definitions.add(component)
             }
 
@@ -168,7 +166,7 @@ class ConfigurationBeanPostProcessor : BeanFactoryPostProcessor, Prioritized {
                         if (!imported.isNullOrBlank()) {
                             imported.split(",").map { it.trim() }.forEach {
                                 val klass = Class.forName(it)
-                                val component = RootBeanDefinition(klass, ConstructorInvokingFactoryBean(klass))
+                                val component = RootBeanDefinition(klass)
                                 definitions.add(component)
                             }
                         }
