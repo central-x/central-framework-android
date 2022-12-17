@@ -24,11 +24,14 @@
 
 package central.android.test.bean.instantiate.support
 
-import central.android.test.bean.data.Department
 import central.android.test.bean.service.AccountService
 import central.android.test.bean.service.DepartmentService
+import central.android.test.bean.service.impl.AccountServiceImpl
+import central.android.test.bean.service.impl.DepartmentServiceImpl
+import central.bean.Validatable
 import central.bean.factory.Autowired
-import central.bean.factory.config.Component
+import org.junit.Assert
+import java.util.*
 
 /**
  * 无参构造函数组件
@@ -36,8 +39,7 @@ import central.bean.factory.config.Component
  * @author Alan Yeh
  * @since 2023/02/16
  */
-@Component
-class NoArgConstructorComponent {
+class NoArgConstructorComponent : Validatable {
 
     /**
      * 通过字段注入
@@ -49,7 +51,7 @@ class NoArgConstructorComponent {
      * 通过 field 注入
      */
     @field:Autowired
-    private lateinit var departmentService2: DepartmentService
+    private var departmentService2: DepartmentService? = null
 
     /**
      * 通过 Setter 注入
@@ -61,9 +63,24 @@ class NoArgConstructorComponent {
      * 测试非必要的注入
      */
     @Autowired(required = false)
-    lateinit var noImplService: NoImplService
+    var noImplService: NoImplService? = null
 
-    fun findById(id: String): Department {
-        return departmentService.findById(id)
+    override fun validate() {
+        // 测试所有的 Bean 是否有正确注入
+        Assert.assertTrue(this::departmentService.isInitialized)
+        Assert.assertTrue(this.departmentService is DepartmentServiceImpl)
+
+        Assert.assertNotNull(this.departmentService2)
+        Assert.assertTrue(this.departmentService2 is DepartmentServiceImpl)
+
+        Assert.assertNotNull(this::accountService.isInitialized)
+        Assert.assertTrue(this.accountService is AccountServiceImpl)
+
+        Assert.assertNull(this.noImplService)
+
+        val id = UUID.randomUUID().toString()
+        val department = this.departmentService.findById(id)
+        Assert.assertNotNull(department)
+        Assert.assertEquals(department.id, id)
     }
 }

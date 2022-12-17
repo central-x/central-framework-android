@@ -22,25 +22,37 @@
  * SOFTWARE.
  */
 
-package central.bean.factory.support.processor
+package central.android.test.bean.instantiate.support
 
-import central.bean.factory.ResourceLoaderAware
-import central.bean.factory.config.BeanPostProcessor
+import central.bean.Validatable
+import central.bean.context.ApplicationContext
+import central.bean.context.ApplicationContextAware
+import central.bean.factory.*
+import central.bean.factory.config.Component
 import central.io.ResourceLoader
+import org.junit.Assert
 
 /**
- * 处理 ResourceLoader 注入
+ * 测试 Aware 接口
  *
  * @author Alan Yeh
- * @see ResourceLoader
- * @see ResourceLoaderAware
- * @since 2023/01/30
+ * @since 2023/02/17
  */
-class ResourceLoaderAwareProcessor(private val resourceLoader: ResourceLoader) : BeanPostProcessor {
+@Component("aware-component")
+class AwareComponent : ApplicationContextAware, ResourceLoaderAware, BeanFactoryAware, BeanNameAware, Validatable {
+    /**
+     * 通过 Aware 接口注入
+     */
+    override lateinit var applicationContext: ApplicationContext
+    override lateinit var resourceLoader: ResourceLoader
+    override lateinit var beanFactory: BeanFactory
+    override lateinit var beanName: String
 
-    override fun processBeforeInitialization(name: String, bean: Any): Any {
-        return bean.also {
-            (it as? ResourceLoaderAware)?.resourceLoader = this.resourceLoader
-        }
+    override fun validate() {
+        Assert.assertTrue(this::applicationContext.isInitialized)
+        Assert.assertNotNull(this::resourceLoader.isInitialized)
+        Assert.assertNotNull(this::beanFactory.isInitialized)
+        Assert.assertNotNull(this::beanName.isInitialized)
+        Assert.assertEquals("aware-component", beanName)
     }
 }

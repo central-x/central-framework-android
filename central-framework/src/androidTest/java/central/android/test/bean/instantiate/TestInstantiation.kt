@@ -29,6 +29,7 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
 import central.android.AndroidApplication
+import central.android.test.bean.instantiate.support.AwareComponent
 import central.android.test.bean.instantiate.support.ConstructorComponent
 import central.android.test.bean.instantiate.support.NoArgConstructorComponent
 import central.android.test.bean.service.impl.AccountServiceImpl
@@ -63,10 +64,14 @@ class TestInstantiation {
         AndroidApplication.run(application, Case1Configuration::class.java)
 
         val component = AndroidApplication.applicationContext.requireBean(NoArgConstructorComponent::class.java)
-        val department = component.findById(UUID.randomUUID().toString())
+        component.validate()
 
         AndroidApplication.stop()
     }
+
+    @Configuration
+    @Import(ConstructorComponent::class, AccountServiceImpl::class, DepartmentServiceImpl::class)
+    class Case2Configuration
 
     /**
      * 测试通过构造函数注入
@@ -74,10 +79,28 @@ class TestInstantiation {
     @Test
     fun case2(){
         val application = ApplicationProvider.getApplicationContext<Application>()
-        AndroidApplication.run(application, ConstructorComponent::class.java)
+        AndroidApplication.run(application, Case2Configuration::class.java)
 
         val component = AndroidApplication.applicationContext.requireBean(ConstructorComponent::class.java)
-        val department = component.findById(UUID.randomUUID().toString())
+        component.validate()
+
+        AndroidApplication.stop()
+    }
+
+    @Configuration
+    @Import(AwareComponent::class)
+    class Case3Configuration
+
+    /**
+     * 测试通过 Aware 接口注入
+     */
+    @Test
+    fun case3() {
+        val application = ApplicationProvider.getApplicationContext<Application>()
+        AndroidApplication.run(application, Case3Configuration::class.java)
+
+        val component = AndroidApplication.applicationContext.requireBean(AwareComponent::class.java)
+        component.validate()
 
         AndroidApplication.stop()
     }

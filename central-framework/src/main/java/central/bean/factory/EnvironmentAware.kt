@@ -33,5 +33,8 @@ import central.env.Environment
  * @since 2022/12/22
  */
 interface EnvironmentAware : Aware {
-    fun setEnvironment(environment: Environment)
+    /**
+     * 注入环境信息
+     */
+    var environment: Environment
 }

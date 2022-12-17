@@ -55,7 +55,7 @@ class ConfigurationBeanPostProcessor : BeanFactoryPostProcessor, Prioritized {
     /**
      * 配置类解析器
      */
-    private val resolvers = listOf(ComponentBeanResolver(), ConfigurationBeanResolver(), ImportBeanResolver(), ResourceImportBeanResolver(this))
+    private val resolvers = listOf(ConfigurationBeanResolver(), ImportBeanResolver(), ResourceImportBeanResolver(this))
 
     /**
      * 用于记录已解析的配置类
@@ -207,33 +207,6 @@ class ConfigurationBeanPostProcessor : BeanFactoryPostProcessor, Prioritized {
             }
 
             return definitions
-        }
-    }
-
-    /**
-     * 解析 @Component 组件类
-     */
-    class ComponentBeanResolver : BeanResolver {
-        override fun support(definition: BeanDefinition): Boolean {
-            return definition.type.isAnnotationPresent(Component::class.java)
-        }
-
-        override fun resolve(definition: BeanDefinition): List<BeanDefinition> {
-            val component = definition.type.getAnnotation(Component::class.java) ?: return emptyList()
-
-            val factory = ConstructorInvokingFactoryBean(definition.type)
-
-            return listOf(
-                GenericBeanDefinition(
-                    name = component.value.ifEmpty { definition.type.simpleName.replaceFirstChar { it.uppercaseChar() } },
-                    type = factory.getBeanType(),
-                    singleton = factory.singleton,
-                    lazyInit = factory.lazy,
-                    dependsOn = emptyList(),
-                    primary = definition.type.isAnnotationPresent(Primary::class.java),
-                    factory = factory
-                )
-            )
         }
     }
 }

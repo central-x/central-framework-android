@@ -39,7 +39,7 @@ import central.bean.factory.config.FactoryBeanPostProcessor
 class BeanNameAwareProcessor : BeanPostProcessor, FactoryBeanPostProcessor {
     override fun processBeforeInitialization(name: String, bean: Any): Any {
         return bean.also {
-            (it as? BeanNameAware)?.setName(name)
+            (it as? BeanNameAware)?.beanName = name
         }
     }
 

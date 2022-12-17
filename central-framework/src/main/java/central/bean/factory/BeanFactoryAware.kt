@@ -7,5 +7,8 @@ package central.bean.factory
  * @since 2022/12/22
  */
 interface BeanFactoryAware : Aware {
-    fun setBeanFactory(factory: BeanFactory)
+    /**
+     * BeanFactory 注入
+     */
+    var beanFactory: BeanFactory
 }

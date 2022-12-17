@@ -40,7 +40,7 @@ class EnvironmentAwareProcessor(private val environment: Environment) : BeanPost
 
     override fun processBeforeInitialization(name: String, bean: Any): Any {
         return bean.also {
-            (it as? EnvironmentAware)?.setEnvironment(this.environment)
+            (it as? EnvironmentAware)?.environment = this.environment
         }
     }
 }

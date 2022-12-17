@@ -33,5 +33,8 @@ import central.io.ResourceLoader
  * @since 2022/12/22
  */
 interface ResourceLoaderAware : Aware {
-    fun setResourceLoader(resourceLoader: ResourceLoader)
+    /**
+     * 资源加载器
+     */
+    var resourceLoader: ResourceLoader
 }

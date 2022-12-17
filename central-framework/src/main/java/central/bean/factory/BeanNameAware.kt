@@ -34,5 +34,5 @@ interface BeanNameAware : Aware {
     /**
      * 注入 Bean 名称
      */
-    fun setName(name: String)
+    var beanName: String
 }
