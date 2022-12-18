@@ -30,6 +30,7 @@ import central.android.test.bean.service.impl.AccountServiceImpl
 import central.android.test.bean.service.impl.DepartmentServiceImpl
 import central.bean.Validatable
 import central.bean.factory.Autowired
+import central.bean.factory.BeanNameAware
 import org.junit.Assert
 import java.util.*
 
@@ -39,7 +40,9 @@ import java.util.*
  * @author Alan Yeh
  * @since 2023/02/16
  */
-class NoArgConstructorComponent : Validatable {
+class NoArgConstructorComponent : BeanNameAware, Validatable {
+
+    override lateinit var beanName: String
 
     /**
      * 通过字段注入

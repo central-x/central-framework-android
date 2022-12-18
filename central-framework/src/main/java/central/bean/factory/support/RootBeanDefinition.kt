@@ -35,7 +35,7 @@ import central.bean.factory.config.*
  */
 class RootBeanDefinition(
     override var type: Class<*>,
-    override val name: String = type.simpleName.replaceFirstChar { it.lowercaseChar() },
+    override val name: String = (type.getAnnotation(Component::class.java)?.value ?: "").ifEmpty { type.simpleName.replaceFirstChar { it.lowercaseChar() } },
     override var singleton: Boolean = type.getAnnotation(Scope::class.java)?.singleton ?: true,
     override var lazyInit: Boolean = type.getAnnotation(LazyInit::class.java)?.value ?: false,
     override var dependsOn: List<String> = type.getAnnotation(DependsOn::class.java)?.value?.toList() ?: emptyList(),

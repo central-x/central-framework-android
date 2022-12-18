@@ -24,9 +24,12 @@
 
 package central.android.test.bean.instantiate.support
 
-import central.android.test.bean.data.Department
 import central.android.test.bean.service.DepartmentService
-import central.bean.factory.config.Component
+import central.android.test.bean.service.impl.DepartmentServiceImpl
+import central.bean.Validatable
+import central.bean.factory.BeanNameAware
+import org.junit.Assert
+import java.util.*
 
 /**
  * 有参造函数组件
@@ -34,10 +37,20 @@ import central.bean.factory.config.Component
  * @author Alan Yeh
  * @since 2023/02/16
  */
-@Component
-class ConstructorComponent(private val departmentService: DepartmentService) {
+class ConstructorComponent(private val departmentService: DepartmentService) : BeanNameAware, Validatable {
 
-    fun findById(id: String): Department {
-        return departmentService.findById(id)
+    override lateinit var beanName: String
+
+    override fun validate() {
+        Assert.assertTrue(this::beanName.isInitialized)
+        Assert.assertEquals(ConstructorComponent::class.java.simpleName.replaceFirstChar { it.lowercaseChar() }, this.beanName)
+
+        Assert.assertNotNull(departmentService)
+        Assert.assertTrue(departmentService is DepartmentServiceImpl)
+
+        val id = UUID.randomUUID().toString()
+        val department = this.departmentService.findById(id)
+        Assert.assertNotNull(department)
+        Assert.assertEquals(department.id, id)
     }
 }

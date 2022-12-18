@@ -194,7 +194,7 @@ class ConfigurationBeanPostProcessor : BeanFactoryPostProcessor, Prioritized {
                 val factory = MethodInvokingFactoryBean(BeanReference(definition), method)
 
                 definitions.add(
-                    GenericBeanDefinition(
+                    RootBeanDefinition(
                         name = bean.name.ifEmpty { method.name },
                         type = factory.getBeanType(),
                         singleton = factory.singleton,

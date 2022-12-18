@@ -34,8 +34,10 @@ import central.android.test.bean.instantiate.support.ConstructorComponent
 import central.android.test.bean.instantiate.support.NoArgConstructorComponent
 import central.android.test.bean.service.impl.AccountServiceImpl
 import central.android.test.bean.service.impl.DepartmentServiceImpl
+import central.bean.factory.config.Bean
 import central.bean.factory.config.Configuration
 import central.bean.factory.config.Import
+import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
 import java.util.*
@@ -51,8 +53,16 @@ import java.util.*
 class TestInstantiation {
 
     @Configuration
-    @Import(NoArgConstructorComponent::class, AccountServiceImpl::class, DepartmentServiceImpl::class)
-    class Case1Configuration
+    @Import(AccountServiceImpl::class, DepartmentServiceImpl::class)
+    class Case1Configuration {
+        /**
+         * 测试通过 Configuration 注入
+         */
+        @Bean
+        fun constructorComponent(): NoArgConstructorComponent {
+            return NoArgConstructorComponent()
+        }
+    }
 
     /**
      * 测试无参构造函数
@@ -65,6 +75,7 @@ class TestInstantiation {
 
         val component = AndroidApplication.applicationContext.requireBean(NoArgConstructorComponent::class.java)
         component.validate()
+        Assert.assertEquals(Case1Configuration::constructorComponent.name, component.beanName)
 
         AndroidApplication.stop()
     }
