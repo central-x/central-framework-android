@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package central.bean.factory.support.processor
+package central.bean.factory.support.processor.bean
 
 import central.bean.context.ApplicationContext
 import central.bean.factory.Autowired

@@ -34,7 +34,7 @@ import central.bean.factory.*
 import central.bean.factory.config.BeanFactoryPostProcessor
 import central.bean.factory.config.BeanPostProcessor
 import central.bean.factory.support.GenericListableBeanFactory
-import central.bean.factory.support.processor.*
+import central.bean.factory.support.processor.bean.*
 import central.env.ConfigurableEnvironment
 import central.io.ResourceLoader
 import central.io.support.ClassPathResourceLoader

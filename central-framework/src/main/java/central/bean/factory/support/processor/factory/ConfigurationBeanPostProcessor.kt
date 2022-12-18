@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package central.bean.factory.support.processor
+package central.bean.factory.support.processor.factory
 
 import central.bean.factory.ConfigurableBeanFactory
 import central.bean.factory.Prioritized

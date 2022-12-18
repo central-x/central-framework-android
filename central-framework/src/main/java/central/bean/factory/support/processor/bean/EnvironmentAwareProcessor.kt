@@ -22,24 +22,25 @@
  * SOFTWARE.
  */
 
-package central.bean.factory.support.processor
+package central.bean.factory.support.processor.bean
 
-import central.bean.context.ApplicationContext
-import central.bean.context.ApplicationListener
+import central.bean.factory.EnvironmentAware
 import central.bean.factory.config.BeanPostProcessor
+import central.env.Environment
 
 /**
- * 事件监听器附加到 ApplicationContext 中
+ * 处理 Environment 注入
  *
  * @author Alan Yeh
- * @since 2023/02/01
+ * @see Environment
+ * @see EnvironmentAware
+ * @since 2023/01/30
  */
-class ApplicationListenerDetector(private val applicationContext: ApplicationContext) : BeanPostProcessor {
+class EnvironmentAwareProcessor(private val environment: Environment) : BeanPostProcessor {
 
-    override fun processAfterInitialization(name: String, bean: Any): Any {
-        if (bean is ApplicationListener<*>) {
-            this.applicationContext.addApplicationListener(bean)
+    override fun processBeforeInitialization(name: String, bean: Any): Any {
+        return bean.also {
+            (it as? EnvironmentAware)?.environment = this.environment
         }
-        return bean
     }
 }

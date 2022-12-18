@@ -30,7 +30,8 @@ import central.android.env.AndroidEnvironment
 import central.bean.context.ApplicationContext
 import central.bean.context.ConfigurableApplicationContext
 import central.bean.factory.support.RootBeanDefinition
-import central.bean.factory.support.processor.*
+import central.bean.factory.support.processor.bean.*
+import central.bean.factory.support.processor.factory.ConfigurationBeanPostProcessor
 import central.env.ConfigurableEnvironment
 import central.io.ResourceLoader
 import central.io.support.ClassPathResourceLoader

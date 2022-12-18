@@ -22,25 +22,28 @@
  * SOFTWARE.
  */
 
-package central.bean.factory.support.processor
+package central.bean.factory.support.processor.bean
 
-import central.bean.factory.ResourceLoaderAware
+import central.bean.factory.BeanNameAware
+import central.bean.factory.FactoryBean
 import central.bean.factory.config.BeanPostProcessor
-import central.io.ResourceLoader
+import central.bean.factory.config.FactoryBeanPostProcessor
 
 /**
- * 处理 ResourceLoader 注入
+ * 处理 Bean 名称注入
  *
  * @author Alan Yeh
- * @see ResourceLoader
- * @see ResourceLoaderAware
+ * @see BeanNameAware
  * @since 2023/01/30
  */
-class ResourceLoaderAwareProcessor(private val resourceLoader: ResourceLoader) : BeanPostProcessor {
-
+class BeanNameAwareProcessor : BeanPostProcessor, FactoryBeanPostProcessor {
     override fun processBeforeInitialization(name: String, bean: Any): Any {
         return bean.also {
-            (it as? ResourceLoaderAware)?.resourceLoader = this.resourceLoader
+            (it as? BeanNameAware)?.beanName = name
         }
+    }
+
+    override fun postProcessFactoryBean(factory: FactoryBean<*>) {
+        TODO("Not yet implemented")
     }
 }

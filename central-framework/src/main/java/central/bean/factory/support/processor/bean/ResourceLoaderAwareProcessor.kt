@@ -22,31 +22,25 @@
  * SOFTWARE.
  */
 
-package central.bean.factory.support.processor
+package central.bean.factory.support.processor.bean
 
-import central.bean.context.ApplicationContext
-import central.bean.context.ApplicationContextAware
-import central.bean.factory.FactoryBean
+import central.bean.factory.ResourceLoaderAware
 import central.bean.factory.config.BeanPostProcessor
-import central.bean.factory.config.FactoryBeanPostProcessor
+import central.io.ResourceLoader
 
 /**
- * 处理 ApplicationContext 注入
+ * 处理 ResourceLoader 注入
  *
  * @author Alan Yeh
- * @see ApplicationContext
- * @see ApplicationContextAware
+ * @see ResourceLoader
+ * @see ResourceLoaderAware
  * @since 2023/01/30
  */
-class ApplicationContextAwareProcessor(private val applicationContext: ApplicationContext) : BeanPostProcessor, FactoryBeanPostProcessor {
+class ResourceLoaderAwareProcessor(private val resourceLoader: ResourceLoader) : BeanPostProcessor {
 
     override fun processBeforeInitialization(name: String, bean: Any): Any {
         return bean.also {
-            (it as? ApplicationContextAware)?.applicationContext = this.applicationContext
+            (it as? ResourceLoaderAware)?.resourceLoader = this.resourceLoader
         }
-    }
-
-    override fun postProcessFactoryBean(factory: FactoryBean<*>) {
-        (factory as? ApplicationContextAware)?.applicationContext = this.applicationContext
     }
 }

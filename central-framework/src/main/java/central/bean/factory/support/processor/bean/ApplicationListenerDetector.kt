@@ -22,28 +22,24 @@
  * SOFTWARE.
  */
 
-package central.bean.factory.support.processor
+package central.bean.factory.support.processor.bean
 
-import central.bean.factory.BeanNameAware
-import central.bean.factory.FactoryBean
+import central.bean.context.ApplicationContext
+import central.bean.context.ApplicationListener
 import central.bean.factory.config.BeanPostProcessor
-import central.bean.factory.config.FactoryBeanPostProcessor
 
 /**
- * 处理 Bean 名称注入
+ * 事件监听器附加到 ApplicationContext 中
  *
  * @author Alan Yeh
- * @see BeanNameAware
- * @since 2023/01/30
+ * @since 2023/02/01
  */
-class BeanNameAwareProcessor : BeanPostProcessor, FactoryBeanPostProcessor {
-    override fun processBeforeInitialization(name: String, bean: Any): Any {
-        return bean.also {
-            (it as? BeanNameAware)?.beanName = name
-        }
-    }
+class ApplicationListenerDetector(private val applicationContext: ApplicationContext) : BeanPostProcessor {
 
-    override fun postProcessFactoryBean(factory: FactoryBean<*>) {
-        TODO("Not yet implemented")
+    override fun processAfterInitialization(name: String, bean: Any): Any {
+        if (bean is ApplicationListener<*>) {
+            this.applicationContext.addApplicationListener(bean)
+        }
+        return bean
     }
 }

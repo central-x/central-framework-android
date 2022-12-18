@@ -22,25 +22,31 @@
  * SOFTWARE.
  */
 
-package central.bean.factory.support.processor
+package central.bean.factory.support.processor.bean
 
-import central.bean.factory.EnvironmentAware
+import central.bean.context.ApplicationContext
+import central.bean.context.ApplicationContextAware
+import central.bean.factory.FactoryBean
 import central.bean.factory.config.BeanPostProcessor
-import central.env.Environment
+import central.bean.factory.config.FactoryBeanPostProcessor
 
 /**
- * 处理 Environment 注入
+ * 处理 ApplicationContext 注入
  *
  * @author Alan Yeh
- * @see Environment
- * @see EnvironmentAware
+ * @see ApplicationContext
+ * @see ApplicationContextAware
  * @since 2023/01/30
  */
-class EnvironmentAwareProcessor(private val environment: Environment) : BeanPostProcessor {
+class ApplicationContextAwareProcessor(private val applicationContext: ApplicationContext) : BeanPostProcessor, FactoryBeanPostProcessor {
 
     override fun processBeforeInitialization(name: String, bean: Any): Any {
         return bean.also {
-            (it as? EnvironmentAware)?.environment = this.environment
+            (it as? ApplicationContextAware)?.applicationContext = this.applicationContext
         }
+    }
+
+    override fun postProcessFactoryBean(factory: FactoryBean<*>) {
+        (factory as? ApplicationContextAware)?.applicationContext = this.applicationContext
     }
 }
