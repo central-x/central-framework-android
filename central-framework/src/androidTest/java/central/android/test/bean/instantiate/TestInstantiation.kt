@@ -115,4 +115,21 @@ class TestInstantiation {
 
         AndroidApplication.stop()
     }
+
+    @Configuration
+    class Case4Configuration
+
+    /**
+     * 测试通过 imports 文件导入 Bean
+     */
+    @Test
+    fun case4(){
+        val application = ApplicationProvider.getApplicationContext<Application>()
+        AndroidApplication.run(application, Case4Configuration::class.java)
+
+        val component = AndroidApplication.applicationContext.requireBean(ConstructorComponent::class.java)
+        component.validate()
+
+        AndroidApplication.stop()
+    }
 }
