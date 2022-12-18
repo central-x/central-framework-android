@@ -10,5 +10,5 @@ package central.bean.factory.config
 @Target(AnnotationTarget.FUNCTION, AnnotationTarget.TYPE)
 @Retention(AnnotationRetention.RUNTIME)
 annotation class DependsOn(
-    val value: Array<String>
+    vararg val value: String
 )

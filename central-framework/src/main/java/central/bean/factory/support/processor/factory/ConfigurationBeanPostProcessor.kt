@@ -191,6 +191,7 @@ class ConfigurationBeanPostProcessor : BeanFactoryPostProcessor, Prioritized {
 
             for (method in definition.type.methods) {
                 val bean = method.getAnnotation(Bean::class.java) ?: continue
+                val dependsOn = method.getAnnotation(DependsOn::class.java)
                 val factory = MethodInvokingFactoryBean(BeanReference(definition), method)
 
                 definitions.add(
@@ -199,7 +200,7 @@ class ConfigurationBeanPostProcessor : BeanFactoryPostProcessor, Prioritized {
                         type = factory.getBeanType(),
                         singleton = factory.singleton,
                         lazyInit = factory.lazy,
-                        dependsOn = emptyList(),
+                        dependsOn = dependsOn?.value?.toList() ?: emptyList(),
                         primary = method.isAnnotationPresent(Primary::class.java),
                         factory = factory
                     )
