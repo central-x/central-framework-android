@@ -25,15 +25,21 @@
 package central.android.context
 
 import central.android.env.AndroidEnvironment
-import central.bean.context.*
+import central.bean.context.ApplicationEvent
+import central.bean.context.ApplicationEventPublisher
+import central.bean.context.ApplicationListener
+import central.bean.context.ConfigurableApplicationContext
 import central.bean.context.event.ContextRefreshedEvent
 import central.bean.context.support.GenericApplicationEventPublisher
 import central.bean.convert.ConversionService
 import central.bean.convert.support.GenericConversionService
-import central.bean.factory.*
+import central.bean.factory.BeanException
+import central.bean.factory.ConfigurableBeanFactory
+import central.bean.factory.Prioritized
+import central.bean.factory.PriorityComparator
 import central.bean.factory.config.BeanFactoryPostProcessor
 import central.bean.factory.config.BeanPostProcessor
-import central.bean.factory.support.GenericListableBeanFactory
+import central.bean.factory.support.GenericBeanFactory
 import central.bean.factory.support.processor.bean.*
 import central.env.ConfigurableEnvironment
 import central.io.ResourceLoader
@@ -46,7 +52,7 @@ import central.io.support.ClassPathResourceLoader
  * @since 2023/01/31
  */
 open class AndroidApplicationContext : ConfigurableApplicationContext {
-    override val beanFactory: ConfigurableBeanFactory = GenericListableBeanFactory()
+    override val beanFactory: ConfigurableBeanFactory = GenericBeanFactory()
     override var environment: ConfigurableEnvironment = AndroidEnvironment()
 
     private val beanFactoryPostProcessors: MutableList<BeanFactoryPostProcessor> = mutableListOf()
@@ -91,12 +97,6 @@ open class AndroidApplicationContext : ConfigurableApplicationContext {
         this.beanFactory.addBeanPostProcessor(AutowiredProcessor(this))
         // 用于特殊处理 ApplicationListener
         this.beanFactory.addBeanPostProcessor(ApplicationListenerDetector(this))
-
-        // 添加预设的 Bean 注入
-        this.beanFactory.registerResolvableDependency(ApplicationContext::class.java, this)
-        this.beanFactory.registerResolvableDependency(BeanFactory::class.java, this)
-        this.beanFactory.registerResolvableDependency(ResourceLoader::class.java, this)
-        this.beanFactory.registerResolvableDependency(ApplicationEventPublisher::class.java, this)
     }
 
     /**

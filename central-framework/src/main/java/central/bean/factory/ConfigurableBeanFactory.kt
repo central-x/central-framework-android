@@ -72,12 +72,6 @@ interface ConfigurableBeanFactory: BeanFactory {
     fun clearBeans()
 
     /**
-     * 注册一个指定的依赖的值
-     * 这个方法用于处理那些没有注册成 Bean，但又需要被注入的值，如 ApplicationContext 这些
-     */
-    fun registerResolvableDependency(dependencyType: Class<*>, autowiredValue: Any?)
-
-    /**
      * 初始化所有非延迟初始化的单例
      *
      * @see central.bean.factory.config.LazyInit

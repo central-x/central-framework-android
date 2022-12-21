@@ -37,9 +37,9 @@ import java.util.concurrent.ConcurrentHashMap
  * @author Alan Yeh
  * @since 2022/12/19
  */
-class GenericListableBeanFactory : ConfigurableBeanFactory {
+class GenericBeanFactory : ConfigurableBeanFactory {
 
-    override var beanClassLoader: ClassLoader = Thread.currentThread().contextClassLoader ?: GenericListableBeanFactory::class.java.classLoader!!
+    override var beanClassLoader: ClassLoader = Thread.currentThread().contextClassLoader ?: GenericBeanFactory::class.java.classLoader!!
 
     override var conversionService: ConversionService = GenericConversionService()
 
@@ -160,10 +160,6 @@ class GenericListableBeanFactory : ConfigurableBeanFactory {
 
     override fun clearBeanPostProcessors() {
         this.beanPostProcessors.clear()
-    }
-
-    override fun registerResolvableDependency(dependencyType: Class<*>, autowiredValue: Any?) {
-        // TODO
     }
 
     override fun preInstantiateSingletons() {

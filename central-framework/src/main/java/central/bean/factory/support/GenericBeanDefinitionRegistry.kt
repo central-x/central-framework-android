@@ -41,7 +41,7 @@ class GenericBeanDefinitionRegistry: BeanDefinitionRegistry {
      */
     private val definitions = mutableMapOf<String, BeanDefinition>()
 
-    override fun getBeanDefinitionNames(): List<String> {
+    override fun getDefinitionNames(): List<String> {
         return definitions.keys.toList()
     }
 

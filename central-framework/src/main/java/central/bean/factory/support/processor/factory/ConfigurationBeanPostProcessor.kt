@@ -71,7 +71,7 @@ class ConfigurationBeanPostProcessor : BeanFactoryPostProcessor, Prioritized {
         val candidates = mutableListOf<BeanDefinition>()
 
         // 找到所有配置类
-        for (name in registry.getBeanDefinitionNames()) {
+        for (name in registry.getDefinitionNames()) {
             val definition = registry.getDefinition(name) ?: continue
 
             if (definition.type.isAnnotationPresent(Configuration::class.java)) {

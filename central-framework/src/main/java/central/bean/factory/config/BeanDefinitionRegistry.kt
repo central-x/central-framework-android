@@ -35,7 +35,7 @@ interface BeanDefinitionRegistry {
     /**
      * 获取所有 Bean 定义的名称
      */
-    fun getBeanDefinitionNames(): List<String>
+    fun getDefinitionNames(): List<String>
 
     /**
      * 注册一个新的 Bean
