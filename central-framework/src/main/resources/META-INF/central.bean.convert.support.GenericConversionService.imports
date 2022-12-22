@@ -1,4 +1,4 @@
-convertx.converters=\
+imports=\
   central.bean.convert.support.impl.lang.BooleanConverter,\
   central.bean.convert.support.impl.lang.ByteConverter,\
   central.bean.convert.support.impl.lang.DoubleConverter,\

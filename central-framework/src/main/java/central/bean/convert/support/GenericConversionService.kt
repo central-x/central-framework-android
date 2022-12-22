@@ -57,12 +57,12 @@ class GenericConversionService : ConversionService {
 
     init {
         // 预注册转换器
-        val resources = Thread.currentThread().contextClassLoader?.getResources("META-INF/convertx.properties")
+        val resources = Thread.currentThread().contextClassLoader?.getResources("META-INF/${this::class.java.name}.imports")
         if (resources != null) {
             while (resources.hasMoreElements()) {
                 val properties = Properties()
                 properties.load(resources.nextElement().openStream())
-                val classes = properties.getProperty("convertx.converters")
+                val classes = properties.getProperty("imports")
                 classes.split(",")
                     // 将 properties 里面指定的类加载出来
                     .map { Class.forName(it) }
