@@ -22,17 +22,25 @@
  * SOFTWARE.
  */
 
-package central.android.test.bean.service
+package central.bean.convert.support.impl.lang
 
-import central.android.test.bean.data.Account
-import central.android.test.bean.data.Department
+import central.bean.convert.Converter
 
 /**
- * 帐户服务
+ * Class Converter
  *
  * @author Alan Yeh
- * @since 2023/02/14
+ * @since 2023/02/18
  */
-interface AccountService {
-    fun findByDepartment(department: Department): List<Account>
+object ClassConverter : Converter<Class<*>> {
+    override fun support(source: Class<*>): Boolean {
+        return source == String::class.java
+    }
+
+    override fun convert(source: Any): Class<*>? {
+        if (source is String) {
+            return Class.forName(source)
+        }
+        return null
+    }
 }

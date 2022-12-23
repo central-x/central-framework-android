@@ -25,7 +25,8 @@
 package central.bean.convert.support
 
 import central.bean.InitializeException
-import central.bean.convert.ConversionService
+import central.bean.convert.ConfigurableConversionService
+import central.bean.convert.Converter
 import central.bean.convert.support.impl.UnsupportedConverter
 import central.lang.Assertx
 import java.lang.reflect.ParameterizedType
@@ -39,7 +40,7 @@ import java.util.concurrent.ConcurrentHashMap
  * @author Alan Yeh
  * @since 2023/02/06
  */
-class GenericConversionService : ConversionService {
+class GenericConversionService : ConfigurableConversionService {
     /**
      * 已注册的类型转换器
      *
@@ -88,7 +89,7 @@ class GenericConversionService : ConversionService {
      *
      * @param converter 数据转换器
      */
-    fun register(converter: Converter<*>) {
+    override fun register(converter: Converter<*>) {
         val targetType = Assertx.requireNotNull(this.findTargetType(converter), "Register converter failed: Cannot find interface Converter<?> from '${converter::javaClass.name}'")
 
         this.converters.computeIfAbsent(targetType.typeName) { mutableListOf() }.add(converter)
@@ -98,7 +99,7 @@ class GenericConversionService : ConversionService {
     /**
      * 取消注册
      */
-    fun deregister(converter: Converter<*>) {
+    override fun deregister(converter: Converter<*>) {
         val targetType = this.findTargetType(converter) ?: return
 
         this.converters.computeIfAbsent(targetType.typeName) { mutableListOf() }.remove(converter)
@@ -126,7 +127,7 @@ class GenericConversionService : ConversionService {
      * @param target 目标类型
      */
     @Suppress("UNCHECKED_CAST")
-    override fun <T> convert(source: Any?, target: Class<*>): T? {
+    override fun <T> convert(source: Any?, target: Class<T>): T? {
         if (source == null) {
             return null
         }

@@ -24,7 +24,7 @@
 
 package central.bean.convert.support.impl.lang
 
-import central.bean.convert.support.Converter
+import central.bean.convert.Converter
 
 /**
  * String Converter

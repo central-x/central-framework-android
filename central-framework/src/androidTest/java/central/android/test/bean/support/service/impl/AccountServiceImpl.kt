@@ -22,27 +22,37 @@
  * SOFTWARE.
  */
 
-package central.android.test.bean.data
+package central.android.test.bean.support.service.impl
+
+import central.android.test.bean.support.data.Account
+import central.android.test.bean.support.data.Department
+import central.android.test.bean.support.service.AccountService
+import central.bean.factory.config.Component
+import java.util.*
 
 /**
- * 部门
+ * 帐户服务
  *
  * @author Alan Yeh
  * @since 2023/02/14
  */
-class Department {
-    /**
-     * 主键
-     */
-    var id: String? = null
+@Component
+class AccountServiceImpl : AccountService {
 
-    /**
-     * 名称
-     */
-    var name: String? = null
+//    @Autowired
+//    private lateinit var departmentService: DepartmentService
 
-    /**
-     * 帐户
-     */
-    var accounts: List<Account>? = null
+    override fun findByDepartment(department: Department): List<Account> {
+        val accounts = mutableListOf<Account>()
+        for (index in 0..9) {
+            val account = Account()
+            account.id = UUID.randomUUID().toString()
+            account.name = "张 $index"
+            account.age = index
+            account.departmentId = department.id
+            account.department = department
+            accounts.add(account)
+        }
+        return accounts
+    }
 }

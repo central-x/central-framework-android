@@ -22,44 +22,27 @@
  * SOFTWARE.
  */
 
-package central.android.test.bean.service
-
-import android.util.Log
-import central.bean.context.ApplicationContext
-import central.bean.context.ApplicationContextAware
-import central.bean.factory.InitializingBean
-import central.bean.factory.config.Component
-import java.util.*
+package central.android.test.bean.support.data
 
 /**
- * 测试服务
+ * 部门
  *
  * @author Alan Yeh
  * @since 2023/02/14
  */
-@Component
-class TestService() : ApplicationContextAware, InitializingBean {
-    override lateinit var applicationContext: ApplicationContext
+class Department {
+    /**
+     * 主键
+     */
+    var id: String? = null
 
-    constructor(accountService: AccountService, departmentService: DepartmentService) : this() {
-        this.accountService = accountService
-        this.departmentService = departmentService
-    }
+    /**
+     * 名称
+     */
+    var name: String? = null
 
-    //    @set:Autowired
-    lateinit var accountService: AccountService
-
-    //    @set:Autowired
-    lateinit var departmentService: DepartmentService
-
-//    @Autowired
-//    fun inject(accountService: AccountService, departmentService: DepartmentService) {
-//        this.accountService = accountService
-//        this.departmentService = departmentService
-//    }
-
-    override fun initialize() {
-        val department = this.departmentService.findById(UUID.randomUUID().toString())
-        Log.d("TestService", "test")
-    }
+    /**
+     * 帐户
+     */
+    var accounts: List<Account>? = null
 }

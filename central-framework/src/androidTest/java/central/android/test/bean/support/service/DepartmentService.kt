@@ -22,13 +22,9 @@
  * SOFTWARE.
  */
 
-package central.android.test.bean.service.impl
+package central.android.test.bean.support.service
 
-import central.android.test.bean.data.Department
-import central.android.test.bean.service.DepartmentService
-import central.bean.factory.Autowired
-import central.bean.factory.config.Component
-import java.util.*
+import central.android.test.bean.support.data.Department
 
 /**
  * 部门服务
@@ -36,17 +32,6 @@ import java.util.*
  * @author Alan Yeh
  * @since 2023/02/14
  */
-@Component
-class DepartmentServiceImpl : DepartmentService {
-
-    @Autowired
-    private lateinit var accountService: AccountServiceImpl
-
-    override fun findById(id: String): Department {
-        val department = Department()
-        department.id = id
-        department.name = "开发 ${Random(System.currentTimeMillis()).nextInt(10)} 部"
-        department.accounts = accountService.findByDepartment(department)
-        return department
-    }
+interface DepartmentService {
+    fun findById(id: String): Department
 }

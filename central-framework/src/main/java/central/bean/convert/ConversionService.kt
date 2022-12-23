@@ -42,5 +42,5 @@ interface ConversionService {
     /**
      * 将源对象转换为指定类型
      */
-    fun <T> convert(source: Any?, target: Class<*>): T?
+    fun <T> convert(source: Any?, target: Class<T>): T?
 }

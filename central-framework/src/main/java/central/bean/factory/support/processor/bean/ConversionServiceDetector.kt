@@ -22,31 +22,24 @@
  * SOFTWARE.
  */
 
-package central.android.test.bean.data
+package central.bean.factory.support.processor.bean
+
+import central.bean.convert.ConfigurableConversionService
+import central.bean.convert.Converter
+import central.bean.factory.config.BeanPostProcessor
 
 /**
- * 帐户
+ * 类型转换器附加到 ConversionService 中
  *
  * @author Alan Yeh
- * @since 2023/02/14
+ * @since 2023/02/18
  */
-class Account {
-    /**
-     * 主键
-     */
-    var id: String? = null
+class ConversionServiceDetector(private val conversionService: ConfigurableConversionService) : BeanPostProcessor {
 
-    /**
-     * 部门主键
-     */
-    var departmentId: String? = null
-
-    /**
-     * ukb u
-     */
-    var department: Department? = null
-
-    var name: String? = null
-
-    var age: Int? = null
+    override fun processAfterInitialization(name: String, bean: Any): Any {
+        if (bean is Converter<*>) {
+            conversionService.register(bean)
+        }
+        return bean
+    }
 }

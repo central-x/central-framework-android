@@ -24,7 +24,7 @@
 
 package central.bean.convert.support.impl
 
-import central.bean.convert.support.Converter
+import central.bean.convert.Converter
 
 /**
  * Unsupported Converter

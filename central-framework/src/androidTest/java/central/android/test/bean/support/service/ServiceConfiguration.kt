@@ -22,30 +22,19 @@
  * SOFTWARE.
  */
 
-package central.bean.convert.support.impl.math
+package central.android.test.bean.support.service
 
-import central.bean.convert.support.ConvertException
-import central.bean.convert.Converter
-import java.math.BigInteger
+import central.android.test.bean.support.service.impl.AccountServiceImpl
+import central.android.test.bean.support.service.impl.DepartmentServiceImpl
+import central.bean.factory.config.Configuration
+import central.bean.factory.config.Import
 
 /**
- * BigInteger Converter
  *
  * @author Alan Yeh
- * @since 2022/12/07
+ * @since 2023/02/16
  */
-object BigIntegerConverter : Converter<BigInteger> {
-    override fun support(source: Class<*>): Boolean = when {
-        source == BigInteger::class.java -> true
-        Number::class.java.isAssignableFrom(source) -> true
-        source == String::class.java -> true
-        else -> false
-    }
-
-    override fun convert(source: Any): BigInteger? = when (source) {
-        is BigInteger -> source
-        is Number -> BigInteger.valueOf(source.toLong())
-        is String -> BigInteger(source)
-        else -> throw ConvertException(source, BigInteger::class.java)
-    }
+@Configuration
+@Import(AccountServiceImpl::class, DepartmentServiceImpl::class)
+class ServiceConfiguration {
 }

@@ -25,7 +25,7 @@
 package central.bean.convert.support.impl.lang
 
 import central.bean.convert.support.ConvertException
-import central.bean.convert.support.Converter
+import central.bean.convert.Converter
 import java.util.*
 
 /**

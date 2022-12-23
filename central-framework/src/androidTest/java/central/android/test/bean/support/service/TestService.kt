@@ -22,30 +22,44 @@
  * SOFTWARE.
  */
 
-package central.bean.convert.support.impl.math
+package central.android.test.bean.support.service
 
-import central.bean.convert.support.ConvertException
-import central.bean.convert.Converter
-import java.math.BigInteger
+import android.util.Log
+import central.bean.context.ApplicationContext
+import central.bean.context.ApplicationContextAware
+import central.bean.factory.InitializingBean
+import central.bean.factory.config.Component
+import java.util.*
 
 /**
- * BigInteger Converter
+ * 测试服务
  *
  * @author Alan Yeh
- * @since 2022/12/07
+ * @since 2023/02/14
  */
-object BigIntegerConverter : Converter<BigInteger> {
-    override fun support(source: Class<*>): Boolean = when {
-        source == BigInteger::class.java -> true
-        Number::class.java.isAssignableFrom(source) -> true
-        source == String::class.java -> true
-        else -> false
+@Component
+class TestService() : ApplicationContextAware, InitializingBean {
+    override lateinit var applicationContext: ApplicationContext
+
+    constructor(accountService: AccountService, departmentService: DepartmentService) : this() {
+        this.accountService = accountService
+        this.departmentService = departmentService
     }
 
-    override fun convert(source: Any): BigInteger? = when (source) {
-        is BigInteger -> source
-        is Number -> BigInteger.valueOf(source.toLong())
-        is String -> BigInteger(source)
-        else -> throw ConvertException(source, BigInteger::class.java)
+    //    @set:Autowired
+    lateinit var accountService: AccountService
+
+    //    @set:Autowired
+    lateinit var departmentService: DepartmentService
+
+//    @Autowired
+//    fun inject(accountService: AccountService, departmentService: DepartmentService) {
+//        this.accountService = accountService
+//        this.departmentService = departmentService
+//    }
+
+    override fun initialize() {
+        val department = this.departmentService.findById(UUID.randomUUID().toString())
+        Log.d("TestService", "test")
     }
 }

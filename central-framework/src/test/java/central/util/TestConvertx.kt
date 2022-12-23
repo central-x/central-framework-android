@@ -24,7 +24,7 @@
 
 package central.util
 
-import central.bean.convert.support.Converter
+import central.bean.convert.Converter
 import org.junit.Assert.*
 import org.junit.Test
 import java.sql.Timestamp

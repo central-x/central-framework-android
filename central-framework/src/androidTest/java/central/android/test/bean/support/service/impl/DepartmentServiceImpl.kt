@@ -22,24 +22,31 @@
  * SOFTWARE.
  */
 
-package central.bean.convert.support
+package central.android.test.bean.support.service.impl
+
+import central.android.test.bean.support.data.Department
+import central.android.test.bean.support.service.DepartmentService
+import central.bean.factory.Autowired
+import central.bean.factory.config.Component
+import java.util.*
 
 /**
- * 类型转换器
+ * 部门服务
  *
  * @author Alan Yeh
- * @since 2022/12/07
+ * @since 2023/02/14
  */
-interface Converter<T> {
-    /**
-     * 判断当前转换器是否支持转换源类型
-     *
-     * @param source 源类型
-     */
-    fun support(source: Class<*>): Boolean
+@Component
+class DepartmentServiceImpl : DepartmentService {
 
-    /**
-     * 转换数据
-     */
-    fun convert(source: Any): T?
+    @Autowired
+    private lateinit var accountService: AccountServiceImpl
+
+    override fun findById(id: String): Department {
+        val department = Department()
+        department.id = id
+        department.name = "开发 ${Random(System.currentTimeMillis()).nextInt(10)} 部"
+        department.accounts = accountService.findByDepartment(department)
+        return department
+    }
 }

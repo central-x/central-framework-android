@@ -25,6 +25,7 @@
 package central.android.env
 
 import android.os.Build
+import central.bean.convert.ConversionService
 import central.env.MapPropertySource
 import central.env.PropertySource
 
@@ -34,7 +35,7 @@ import central.env.PropertySource
  * @author Alan Yeh
  * @since 2022/12/22
  */
-class SystemEnvironmentPropertySource : PropertySource {
+class SystemEnvironmentPropertySource(private val converter: ConversionService) : PropertySource {
     private val delegate: MapPropertySource
 
     init {
@@ -46,7 +47,7 @@ class SystemEnvironmentPropertySource : PropertySource {
             "product.manufacturer" to Build.MANUFACTURER,
             "cpu.abi" to Build.SUPPORTED_ABIS
         )
-        delegate = MapPropertySource("system", environment)
+        delegate = MapPropertySource("system", environment, converter)
     }
 
     override fun getName(): String = this.delegate.getName()

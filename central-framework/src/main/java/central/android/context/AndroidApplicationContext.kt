@@ -31,6 +31,7 @@ import central.bean.context.ApplicationListener
 import central.bean.context.ConfigurableApplicationContext
 import central.bean.context.event.ContextRefreshedEvent
 import central.bean.context.support.GenericApplicationEventPublisher
+import central.bean.convert.ConfigurableConversionService
 import central.bean.convert.ConversionService
 import central.bean.convert.support.GenericConversionService
 import central.bean.factory.BeanException
@@ -107,7 +108,6 @@ open class AndroidApplicationContext : ConfigurableApplicationContext {
         for (processor in this.beanFactoryPostProcessors) {
             processor.postProcessBeanFactory(this.beanFactory)
         }
-
 
         // 2. 接着执行用户动态定义的 BeanFactoryPostProcessor
 
@@ -203,13 +203,17 @@ open class AndroidApplicationContext : ConfigurableApplicationContext {
      * 完成 BeanFactory 的初始化
      */
     private fun finishBeanFactoryInitialization() {
-        val conversionService = this.beanFactory.getBean(ConversionService::class.java)
+        var conversionService = this.beanFactory.getBean(ConversionService::class.java)
         if (conversionService == null) {
-            this.beanFactory.conversionService = GenericConversionService()
-            this.beanFactory.registerSingleton("conversionService", this.beanFactory.conversionService)
+            conversionService = GenericConversionService()
+            this.beanFactory.conversionService = conversionService
+            this.beanFactory.registerSingleton("conversionService", conversionService)
         } else {
             // 支持用户自定义的类型转换服务
             this.beanFactory.conversionService = conversionService
+        }
+        if (conversionService is ConfigurableConversionService) {
+            this.beanFactory.addBeanPostProcessor(ConversionServiceDetector(conversionService))
         }
 
         // 初始化剩余非延迟初始化的单例

@@ -22,16 +22,17 @@
  * SOFTWARE.
  */
 
-package central.android.test.bean.service
+package central.android.test.bean.support.service
 
-import central.android.test.bean.data.Department
+import central.android.test.bean.support.data.Account
+import central.android.test.bean.support.data.Department
 
 /**
- * 部门服务
+ * 帐户服务
  *
  * @author Alan Yeh
  * @since 2023/02/14
  */
-interface DepartmentService {
-    fun findById(id: String): Department
+interface AccountService {
+    fun findByDepartment(department: Department): List<Account>
 }

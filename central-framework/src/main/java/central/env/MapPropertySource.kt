@@ -24,8 +24,8 @@
 
 package central.env
 
+import central.bean.convert.ConversionService
 import central.lang.Assertx
-import central.util.Convertx
 
 /**
  * Map Source
@@ -35,11 +35,9 @@ import central.util.Convertx
  * @author Alan Yeh
  * @since 2022/12/23
  */
-class MapPropertySource(private val name: String, private val source: Map<String, Any>) : PropertySource {
+class MapPropertySource(private val name: String, private val source: Map<String, Any>, private val converter: ConversionService) : PropertySource {
 
     override fun getName(): String = this.name
-
-    private val converter: Convertx = Convertx
 
     override fun containsProperty(key: String): Boolean {
         return source.containsKey(key)

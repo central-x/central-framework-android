@@ -24,8 +24,8 @@
 
 package central.env
 
+import central.bean.convert.ConversionService
 import central.lang.Assertx
-import central.util.Convertx
 import java.util.*
 
 /**
@@ -34,11 +34,9 @@ import java.util.*
  * @author Alan Yeh
  * @since 2022/12/22
  */
-class PropertiesSource(private val name: String, private val properties: Properties) : PropertySource {
+class PropertiesSource(private val name: String, private val properties: Properties, private val converter: ConversionService) : PropertySource {
 
     override fun getName(): String = this.name
-
-    private val converter: Convertx = Convertx
 
     override fun containsProperty(key: String): Boolean {
         return properties.containsKey(key)

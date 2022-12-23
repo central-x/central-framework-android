@@ -32,8 +32,8 @@ import central.android.AndroidApplication
 import central.android.test.bean.instantiate.support.AwareComponent
 import central.android.test.bean.instantiate.support.ConstructorComponent
 import central.android.test.bean.instantiate.support.NoArgConstructorComponent
-import central.android.test.bean.service.impl.AccountServiceImpl
-import central.android.test.bean.service.impl.DepartmentServiceImpl
+import central.android.test.bean.support.service.impl.AccountServiceImpl
+import central.android.test.bean.support.service.impl.DepartmentServiceImpl
 import central.bean.factory.config.Bean
 import central.bean.factory.config.Configuration
 import central.bean.factory.config.Import

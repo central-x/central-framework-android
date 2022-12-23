@@ -24,8 +24,8 @@
 
 package central.android.test.bean.instantiate.support
 
-import central.android.test.bean.service.DepartmentService
-import central.android.test.bean.service.impl.DepartmentServiceImpl
+import central.android.test.bean.support.service.DepartmentService
+import central.android.test.bean.support.service.impl.DepartmentServiceImpl
 import central.bean.Validatable
 import central.bean.factory.BeanNameAware
 import org.junit.Assert

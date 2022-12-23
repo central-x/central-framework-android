@@ -22,37 +22,24 @@
  * SOFTWARE.
  */
 
-package central.android.test.bean.service.impl
-
-import central.android.test.bean.data.Account
-import central.android.test.bean.data.Department
-import central.android.test.bean.service.AccountService
-import central.bean.factory.config.Component
-import java.util.*
+package central.bean.convert
 
 /**
- * 帐户服务
+ * 可配置的类型转换服务
  *
  * @author Alan Yeh
- * @since 2023/02/14
+ * @since 2023/02/18
  */
-@Component
-class AccountServiceImpl : AccountService {
+interface ConfigurableConversionService: ConversionService {
+    /**
+     * 注册转换器
+     *
+     * @param converter 数据转换器
+     */
+    fun register(converter: Converter<*>)
 
-//    @Autowired
-//    private lateinit var departmentService: DepartmentService
-
-    override fun findByDepartment(department: Department): List<Account> {
-        val accounts = mutableListOf<Account>()
-        for (index in 0..9) {
-            val account = Account()
-            account.id = UUID.randomUUID().toString()
-            account.name = "张 $index"
-            account.age = index
-            account.departmentId = department.id
-            account.department = department
-            accounts.add(account)
-        }
-        return accounts
-    }
+    /**
+     * 取消注册
+     */
+    fun deregister(converter: Converter<*>)
 }

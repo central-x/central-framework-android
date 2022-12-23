@@ -22,30 +22,31 @@
  * SOFTWARE.
  */
 
-package central.bean.convert.support.impl.math
-
-import central.bean.convert.support.ConvertException
-import central.bean.convert.Converter
-import java.math.BigInteger
+package central.android.test.bean.support.data
 
 /**
- * BigInteger Converter
+ * 帐户
  *
  * @author Alan Yeh
- * @since 2022/12/07
+ * @since 2023/02/14
  */
-object BigIntegerConverter : Converter<BigInteger> {
-    override fun support(source: Class<*>): Boolean = when {
-        source == BigInteger::class.java -> true
-        Number::class.java.isAssignableFrom(source) -> true
-        source == String::class.java -> true
-        else -> false
-    }
+class Account {
+    /**
+     * 主键
+     */
+    var id: String? = null
 
-    override fun convert(source: Any): BigInteger? = when (source) {
-        is BigInteger -> source
-        is Number -> BigInteger.valueOf(source.toLong())
-        is String -> BigInteger(source)
-        else -> throw ConvertException(source, BigInteger::class.java)
-    }
+    /**
+     * 部门主键
+     */
+    var departmentId: String? = null
+
+    /**
+     * ukb u
+     */
+    var department: Department? = null
+
+    var name: String? = null
+
+    var age: Int? = null
 }

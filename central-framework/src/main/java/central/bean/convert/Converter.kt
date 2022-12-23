@@ -22,19 +22,24 @@
  * SOFTWARE.
  */
 
-package central.android.test.bean.service
-
-import central.android.test.bean.service.impl.AccountServiceImpl
-import central.android.test.bean.service.impl.DepartmentServiceImpl
-import central.bean.factory.config.Configuration
-import central.bean.factory.config.Import
+package central.bean.convert
 
 /**
+ * 类型转换器
  *
  * @author Alan Yeh
- * @since 2023/02/16
+ * @since 2022/12/07
  */
-@Configuration
-@Import(AccountServiceImpl::class, DepartmentServiceImpl::class)
-class ServiceConfiguration {
+interface Converter<T> {
+    /**
+     * 判断当前转换器是否支持转换源类型
+     *
+     * @param source 源类型
+     */
+    fun support(source: Class<*>): Boolean
+
+    /**
+     * 转换数据
+     */
+    fun convert(source: Any): T?
 }
