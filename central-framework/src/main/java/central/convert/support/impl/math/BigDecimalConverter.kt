@@ -22,25 +22,32 @@
  * SOFTWARE.
  */
 
-package central.android.test.bean.convert.support
+package central.convert.support.impl.math
 
+import central.convert.ConvertException
 import central.convert.TypeConverter
+import java.math.BigDecimal
 
 /**
- * Sql Converter
+ * BigDecimal Converter
  *
  * @author Alan Yeh
- * @since 2023/02/18
+ * @since 2022/12/07
  */
-class SqlConverter : TypeConverter<Sql> {
-    override fun support(source: Class<*>): Boolean {
-        return source == String::class.java
+class BigDecimalConverter : TypeConverter<BigDecimal> {
+    override fun support(source: Class<*>): Boolean = when {
+        source == BigDecimal::class.java -> true
+        Number::class.java.isAssignableFrom(source) -> true
+        source == String::class.java -> true
+        else -> false
     }
 
-    override fun convert(source: Any): Sql? {
-        if (source is String) {
-            return Sql(source)
-        }
-        return null
+    override fun convert(source: Any): BigDecimal? = when (source) {
+        is BigDecimal -> source
+        is Double -> BigDecimal.valueOf(source)
+        is Float -> BigDecimal.valueOf(source.toDouble())
+        is Number -> BigDecimal.valueOf(source.toLong())
+        is String -> BigDecimal(source)
+        else -> throw ConvertException(source, BigDecimal::class.java)
     }
 }

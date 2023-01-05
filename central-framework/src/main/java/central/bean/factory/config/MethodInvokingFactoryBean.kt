@@ -26,9 +26,9 @@ package central.bean.factory.config
 
 import central.bean.context.ApplicationContext
 import central.bean.context.ApplicationContextAware
-import central.bean.convert.ConversionService
 import central.bean.factory.*
 import central.bean.factory.support.BeanReference
+import central.convert.Converter
 import java.lang.reflect.Method
 import java.lang.reflect.Modifier
 
@@ -74,7 +74,7 @@ class MethodInvokingFactoryBean(private val instance: Any, private val method: M
      * 解析参数
      */
     private fun resolveParameters(method: Method): Array<Any?> {
-        val converter = this.applicationContext.requireBean(ConversionService::class.java)
+        val converter = this.applicationContext.requireBean(Converter::class.java)
 
         val parameters = arrayOfNulls<Any>(method.parameterCount)
 

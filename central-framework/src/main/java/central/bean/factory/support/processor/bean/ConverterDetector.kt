@@ -22,25 +22,24 @@
  * SOFTWARE.
  */
 
-package central.android.test.bean.convert.support
+package central.bean.factory.support.processor.bean
 
+import central.bean.factory.config.BeanPostProcessor
+import central.convert.ConfigurableConverter
 import central.convert.TypeConverter
 
 /**
- * Sql Converter
+ * 类型转换器附加到 Converter 中
  *
  * @author Alan Yeh
  * @since 2023/02/18
  */
-class SqlConverter : TypeConverter<Sql> {
-    override fun support(source: Class<*>): Boolean {
-        return source == String::class.java
-    }
+class ConverterDetector(private val converter: ConfigurableConverter) : BeanPostProcessor {
 
-    override fun convert(source: Any): Sql? {
-        if (source is String) {
-            return Sql(source)
+    override fun processAfterInitialization(name: String, bean: Any): Any {
+        if (bean is TypeConverter<*>) {
+            converter.register(bean)
         }
-        return null
+        return bean
     }
 }

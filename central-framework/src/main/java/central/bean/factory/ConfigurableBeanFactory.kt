@@ -24,9 +24,9 @@
 
 package central.bean.factory
 
-import central.bean.convert.ConversionService
 import central.bean.factory.config.BeanDefinitionRegistry
 import central.bean.factory.config.BeanPostProcessor
+import central.convert.Converter
 
 /**
  * 可配置的 Bean 工厂
@@ -44,7 +44,7 @@ interface ConfigurableBeanFactory: BeanFactory {
     /**
      * 类型转换服务
      */
-    var conversionService: ConversionService
+    var converter: Converter
 
     /**
      * Bean 定义注册中心

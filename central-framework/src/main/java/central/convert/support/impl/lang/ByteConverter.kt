@@ -22,25 +22,27 @@
  * SOFTWARE.
  */
 
-package central.android.test.bean.convert.support
+package central.convert.support.impl.lang
 
+import central.convert.ConvertException
 import central.convert.TypeConverter
 
 /**
- * Sql Converter
+ * Byte Converter
  *
  * @author Alan Yeh
- * @since 2023/02/18
+ * @since 2022/12/07
  */
-class SqlConverter : TypeConverter<Sql> {
-    override fun support(source: Class<*>): Boolean {
-        return source == String::class.java
+class ByteConverter : TypeConverter<Byte> {
+    override fun support(source: Class<*>): Boolean = when {
+        source == Byte::class.javaObjectType -> true
+        Number::class.java.isAssignableFrom(source) -> true
+        else -> false
     }
 
-    override fun convert(source: Any): Sql? {
-        if (source is String) {
-            return Sql(source)
-        }
-        return null
+    override fun convert(source: Any): Byte? = when (source) {
+        is Byte -> source
+        is Number -> source.toByte()
+        else -> throw ConvertException(source, Byte::class.javaObjectType)
     }
 }

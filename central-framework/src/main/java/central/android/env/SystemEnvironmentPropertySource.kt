@@ -25,7 +25,7 @@
 package central.android.env
 
 import android.os.Build
-import central.bean.convert.ConversionService
+import central.convert.Converter
 import central.env.MapPropertySource
 import central.env.PropertySource
 
@@ -35,7 +35,7 @@ import central.env.PropertySource
  * @author Alan Yeh
  * @since 2022/12/22
  */
-class SystemEnvironmentPropertySource(private val converter: ConversionService) : PropertySource {
+class SystemEnvironmentPropertySource(private val converter: Converter) : PropertySource {
     private val delegate: MapPropertySource
 
     init {

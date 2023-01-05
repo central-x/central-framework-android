@@ -22,25 +22,29 @@
  * SOFTWARE.
  */
 
-package central.android.test.bean.convert.support
+package central.convert.support.impl.lang
 
+import central.convert.ConvertException
 import central.convert.TypeConverter
 
 /**
- * Sql Converter
+ * Float Convert
  *
  * @author Alan Yeh
- * @since 2023/02/18
+ * @since 2022/12/07
  */
-class SqlConverter : TypeConverter<Sql> {
-    override fun support(source: Class<*>): Boolean {
-        return source == String::class.java
+class FloatConverter : TypeConverter<Float> {
+    override fun support(source: Class<*>): Boolean = when {
+        source == Float::class.javaObjectType -> true
+        source == String::class.java -> true
+        Number::class.java.isAssignableFrom(source) -> true
+        else -> false
     }
 
-    override fun convert(source: Any): Sql? {
-        if (source is String) {
-            return Sql(source)
-        }
-        return null
+    override fun convert(source: Any): Float? = when (source) {
+        is Float -> source
+        is Number -> source.toFloat()
+        is String -> source.toFloat()
+        else -> throw ConvertException(source, Float::class.javaObjectType)
     }
 }

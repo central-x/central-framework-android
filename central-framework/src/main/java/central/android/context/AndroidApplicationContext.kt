@@ -31,9 +31,6 @@ import central.bean.context.ApplicationListener
 import central.bean.context.ConfigurableApplicationContext
 import central.bean.context.event.ContextRefreshedEvent
 import central.bean.context.support.GenericApplicationEventPublisher
-import central.bean.convert.ConfigurableConversionService
-import central.bean.convert.ConversionService
-import central.bean.convert.support.GenericConversionService
 import central.bean.factory.BeanException
 import central.bean.factory.ConfigurableBeanFactory
 import central.bean.factory.Prioritized
@@ -42,6 +39,9 @@ import central.bean.factory.config.BeanFactoryPostProcessor
 import central.bean.factory.config.BeanPostProcessor
 import central.bean.factory.support.GenericBeanFactory
 import central.bean.factory.support.processor.bean.*
+import central.convert.ConfigurableConverter
+import central.convert.Converter
+import central.convert.support.GenericConverter
 import central.env.ConfigurableEnvironment
 import central.io.ResourceLoader
 import central.io.support.ClassPathResourceLoader
@@ -203,17 +203,17 @@ open class AndroidApplicationContext : ConfigurableApplicationContext {
      * 完成 BeanFactory 的初始化
      */
     private fun finishBeanFactoryInitialization() {
-        var conversionService = this.beanFactory.getBean(ConversionService::class.java)
-        if (conversionService == null) {
-            conversionService = GenericConversionService()
-            this.beanFactory.conversionService = conversionService
-            this.beanFactory.registerSingleton("conversionService", conversionService)
+        var converter = this.beanFactory.getBean(Converter::class.java)
+        if (converter == null) {
+            converter = GenericConverter()
+            this.beanFactory.converter = converter
+            this.beanFactory.registerSingleton("conversionService", converter)
         } else {
             // 支持用户自定义的类型转换服务
-            this.beanFactory.conversionService = conversionService
+            this.beanFactory.converter = converter
         }
-        if (conversionService is ConfigurableConversionService) {
-            this.beanFactory.addBeanPostProcessor(ConversionServiceDetector(conversionService))
+        if (converter is ConfigurableConverter) {
+            this.beanFactory.addBeanPostProcessor(ConverterDetector(converter))
         }
 
         // 初始化剩余非延迟初始化的单例

@@ -22,25 +22,28 @@
  * SOFTWARE.
  */
 
-package central.android.test.bean.convert.support
+package central.convert.support.impl.sql
 
+import central.convert.ConvertException
 import central.convert.TypeConverter
+import java.sql.Timestamp
 
 /**
- * Sql Converter
+ * Timestamp Converter
  *
  * @author Alan Yeh
- * @since 2023/02/18
+ * @since 2022/12/07
  */
-class SqlConverter : TypeConverter<Sql> {
-    override fun support(source: Class<*>): Boolean {
-        return source == String::class.java
+class TimestampConverter : TypeConverter<Timestamp> {
+    override fun support(source: Class<*>): Boolean = when {
+        source == Timestamp::class.java -> true
+        Number::class.java.isAssignableFrom(source) -> true
+        else -> false
     }
 
-    override fun convert(source: Any): Sql? {
-        if (source is String) {
-            return Sql(source)
-        }
-        return null
+    override fun convert(source: Any): Timestamp? = when (source) {
+        is Timestamp -> source
+        is Number -> Timestamp(source.toLong())
+        else -> throw ConvertException(source, Timestamp::class.java)
     }
 }

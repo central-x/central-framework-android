@@ -22,25 +22,25 @@
  * SOFTWARE.
  */
 
-package central.android.test.bean.convert.support
-
-import central.convert.TypeConverter
+package central.convert
 
 /**
- * Sql Converter
+ * 类型转换器
  *
  * @author Alan Yeh
- * @since 2023/02/18
+ * @since 2022/12/07
  */
-class SqlConverter : TypeConverter<Sql> {
-    override fun support(source: Class<*>): Boolean {
-        return source == String::class.java
-    }
+interface TypeConverter<T> {
+    /**
+     * 判断当前转换器是否支持转换源类型
+     *
+     * @param source 源类型
+     */
+    fun support(source: Class<*>): Boolean
 
-    override fun convert(source: Any): Sql? {
-        if (source is String) {
-            return Sql(source)
-        }
-        return null
-    }
+    /**
+     * 执行转换逻辑
+     */
+    @Throws(ConvertException::class)
+    fun convert(source: Any): T?
 }

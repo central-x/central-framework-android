@@ -22,25 +22,30 @@
  * SOFTWARE.
  */
 
-package central.android.test.bean.convert.support
+package central.convert.support.impl.time
 
+import central.convert.ConvertException
 import central.convert.TypeConverter
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.util.*
 
 /**
- * Sql Converter
+ * LocalDateTime Converter
  *
  * @author Alan Yeh
- * @since 2023/02/18
+ * @since 2022/12/07
  */
-class SqlConverter : TypeConverter<Sql> {
-    override fun support(source: Class<*>): Boolean {
-        return source == String::class.java
+class LocalDateTimeConverter : TypeConverter<LocalDateTime> {
+    override fun support(source: Class<*>): Boolean = when {
+        source == LocalDateTime::class.java -> true
+        Number::class.java.isAssignableFrom(source) -> true
+        else -> false
     }
 
-    override fun convert(source: Any): Sql? {
-        if (source is String) {
-            return Sql(source)
-        }
-        return null
+    override fun convert(source: Any): LocalDateTime? = when (source) {
+        is LocalDateTime -> source
+        is Number -> LocalDateTime.ofInstant(Date(source.toLong()).toInstant(), ZoneId.systemDefault())
+        else -> throw ConvertException(source, LocalDateTime::class.java)
     }
 }

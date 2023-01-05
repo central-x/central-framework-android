@@ -22,25 +22,31 @@
  * SOFTWARE.
  */
 
-package central.android.test.bean.convert.support
-
-import central.convert.TypeConverter
+package central.convert
 
 /**
- * Sql Converter
+ * Convert Exception
+ *
+ * 格式转换异常
  *
  * @author Alan Yeh
- * @since 2023/02/18
+ * @since 2022/12/07
  */
-class SqlConverter : TypeConverter<Sql> {
-    override fun support(source: Class<*>): Boolean {
-        return source == String::class.java
+class ConvertException(message: String, cause: Throwable?) : RuntimeException(message, cause) {
+    companion object {
+        private const val serialVersionUID: Long = -2014151445083408555L
     }
 
-    override fun convert(source: Any): Sql? {
-        if (source is String) {
-            return Sql(source)
-        }
-        return null
-    }
+    constructor(message: String) : this(message, null)
+
+    /**
+     * 构建异常
+     *
+     * @param source 源对象
+     * @param target 目标类型
+     */
+    constructor(
+        source: Any,
+        target: Class<*>
+    ) : this("Cannot convert value '$source'(${source.javaClass.name}) to ${target.name}")
 }

@@ -24,10 +24,10 @@
 
 package central.bean.factory.support
 
-import central.bean.convert.ConversionService
-import central.bean.convert.support.GenericConversionService
 import central.bean.factory.*
 import central.bean.factory.config.*
+import central.convert.Converter
+import central.convert.support.GenericConverter
 import central.lang.Assertx
 import java.util.concurrent.ConcurrentHashMap
 
@@ -41,7 +41,7 @@ class GenericBeanFactory : ConfigurableBeanFactory {
 
     override var beanClassLoader: ClassLoader = Thread.currentThread().contextClassLoader ?: GenericBeanFactory::class.java.classLoader!!
 
-    override var conversionService: ConversionService = GenericConversionService()
+    override var converter: Converter = GenericConverter()
 
     override var registry: BeanDefinitionRegistry = GenericBeanDefinitionRegistry()
 

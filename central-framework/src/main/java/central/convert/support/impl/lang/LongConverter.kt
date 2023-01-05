@@ -22,25 +22,32 @@
  * SOFTWARE.
  */
 
-package central.android.test.bean.convert.support
+package central.convert.support.impl.lang
 
+import central.convert.ConvertException
 import central.convert.TypeConverter
+import java.util.*
 
 /**
- * Sql Converter
+ * Long Converter
  *
  * @author Alan Yeh
- * @since 2023/02/18
+ * @since 2022/12/07
  */
-class SqlConverter : TypeConverter<Sql> {
-    override fun support(source: Class<*>): Boolean {
-        return source == String::class.java
+class LongConverter : TypeConverter<Long> {
+    override fun support(source: Class<*>): Boolean = when {
+        source == Long::class.java -> true
+        Number::class.java.isAssignableFrom(source) -> true
+        source == String::class.java -> true
+        Date::class.java.isAssignableFrom(source) -> true
+        else -> false
     }
 
-    override fun convert(source: Any): Sql? {
-        if (source is String) {
-            return Sql(source)
-        }
-        return null
+    override fun convert(source: Any): Long? = when (source) {
+        is Long -> source
+        is Number -> source.toLong()
+        is String -> source.toLong()
+        is Date -> source.time
+        else -> throw ConvertException(source, Long::class.javaObjectType)
     }
 }

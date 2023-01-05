@@ -22,25 +22,29 @@
  * SOFTWARE.
  */
 
-package central.android.test.bean.convert.support
+package central.convert.support.impl.lang
 
+import central.convert.ConvertException
 import central.convert.TypeConverter
 
 /**
- * Sql Converter
+ * Double Converter
  *
  * @author Alan Yeh
- * @since 2023/02/18
+ * @since 2022/12/07
  */
-class SqlConverter : TypeConverter<Sql> {
-    override fun support(source: Class<*>): Boolean {
-        return source == String::class.java
+class DoubleConverter : TypeConverter<Double> {
+    override fun support(source: Class<*>): Boolean = when {
+        source == Double::class.javaObjectType -> true
+        source == String::class.java -> true
+        Number::class.java.isAssignableFrom(source) -> true
+        else -> false
     }
 
-    override fun convert(source: Any): Sql? {
-        if (source is String) {
-            return Sql(source)
-        }
-        return null
+    override fun convert(source: Any): Double? = when (source) {
+        is Double -> source
+        is Number -> source.toDouble()
+        is String -> source.toDouble()
+        else -> throw ConvertException(source, Double::class.javaObjectType)
     }
 }

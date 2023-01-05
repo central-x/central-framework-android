@@ -22,25 +22,30 @@
  * SOFTWARE.
  */
 
-package central.android.test.bean.convert.support
+package central.convert.support.impl.math
 
+import central.convert.ConvertException
 import central.convert.TypeConverter
+import java.math.BigInteger
 
 /**
- * Sql Converter
+ * BigInteger Converter
  *
  * @author Alan Yeh
- * @since 2023/02/18
+ * @since 2022/12/07
  */
-class SqlConverter : TypeConverter<Sql> {
-    override fun support(source: Class<*>): Boolean {
-        return source == String::class.java
+class BigIntegerConverter : TypeConverter<BigInteger> {
+    override fun support(source: Class<*>): Boolean = when {
+        source == BigInteger::class.java -> true
+        Number::class.java.isAssignableFrom(source) -> true
+        source == String::class.java -> true
+        else -> false
     }
 
-    override fun convert(source: Any): Sql? {
-        if (source is String) {
-            return Sql(source)
-        }
-        return null
+    override fun convert(source: Any): BigInteger? = when (source) {
+        is BigInteger -> source
+        is Number -> BigInteger.valueOf(source.toLong())
+        is String -> BigInteger(source)
+        else -> throw ConvertException(source, BigInteger::class.java)
     }
 }

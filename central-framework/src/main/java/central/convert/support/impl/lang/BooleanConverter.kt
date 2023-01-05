@@ -22,25 +22,33 @@
  * SOFTWARE.
  */
 
-package central.android.test.bean.convert.support
+package central.convert.support.impl.lang
 
+import central.convert.ConvertException
 import central.convert.TypeConverter
 
 /**
- * Sql Converter
+ * Boolean Converter
  *
  * @author Alan Yeh
- * @since 2023/02/18
+ * @since 2022/12/07
  */
-class SqlConverter : TypeConverter<Sql> {
-    override fun support(source: Class<*>): Boolean {
-        return source == String::class.java
+class BooleanConverter : TypeConverter<Boolean> {
+    override fun support(source: Class<*>): Boolean = when {
+        source == Boolean::class.javaObjectType -> true
+        source == String::class.java -> true
+        Number::class.java.isAssignableFrom(source) -> true
+        else -> false
     }
 
-    override fun convert(source: Any): Sql? {
-        if (source is String) {
-            return Sql(source)
+    override fun convert(source: Any): Boolean? = when (source) {
+        is Boolean -> source
+        is String -> when {
+            "true".equals(source, true) -> true
+            "1" == source -> true
+            else -> false
         }
-        return null
+        is Number -> source.toInt() != 0
+        else -> throw ConvertException(source, Boolean::class.javaObjectType)
     }
 }

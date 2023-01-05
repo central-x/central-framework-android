@@ -26,8 +26,8 @@ package central.bean.factory.config
 
 import central.bean.context.ApplicationContext
 import central.bean.context.ApplicationContextAware
-import central.bean.convert.ConversionService
 import central.bean.factory.*
+import central.convert.Converter
 import java.lang.reflect.Constructor
 
 /**
@@ -86,7 +86,7 @@ class ConstructorInvokingFactoryBean<T>(private val type: Class<T>) : FactoryBea
     }
 
     private fun resolveParameters(constructor: Constructor<T>): Array<Any?> {
-        val converter = this.applicationContext.requireBean(ConversionService::class.java)
+        val converter = this.applicationContext.requireBean(Converter::class.java)
 
         val parameters = arrayOfNulls<Any>(constructor.parameterCount)
 
