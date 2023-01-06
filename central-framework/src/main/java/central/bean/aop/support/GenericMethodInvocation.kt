@@ -24,8 +24,8 @@
 
 package central.bean.aop.support
 
-import central.bean.aop.MethodInterceptor
 import central.bean.aop.MethodInvocation
+import central.bean.aop.Pointcut
 import java.lang.reflect.Method
 
 /**
@@ -34,7 +34,7 @@ import java.lang.reflect.Method
  * @author Alan Yeh
  * @since 2023/01/30
  */
-class GenericMethodInvocation(private val target: Any, private val method: Method, private val arguments: Array<Any?>, private val interceptors: List<MethodInterceptor>, private val index: Int) : MethodInvocation {
+class GenericMethodInvocation(private val target: Any, private val method: Method, private val arguments: Array<Any?>, private val interceptors: List<Pointcut>, private val index: Int) : MethodInvocation {
 
     constructor(target: Any, method: Method, arguments: Array<Any?>) : this(target, method, arguments, emptyList(), 0)
 

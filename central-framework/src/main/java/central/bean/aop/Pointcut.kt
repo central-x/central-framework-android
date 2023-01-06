@@ -35,6 +35,21 @@ import java.lang.reflect.Method
 interface Pointcut {
     /**
      * 用于判断指定的方法是否为切面点
+     *
+     * @param method 待判断的方法信息
+     * @param targetClass 方法所在类
+     * @param arguments 方法参数
+     *
+     * @return 是否执行切面操作
      */
-    fun matches(method: Method, klass: Class<*>): Boolean
+    fun matches(method: Method, targetClass: Class<*>, arguments: Array<Any?>): Boolean
+
+    /**
+     * 执行切面操作
+     *
+     * @param invocation 方法调用信息
+     * @return 方法调用结果
+     */
+    @Throws(Throwable::class)
+    fun invoke(invocation: MethodInvocation): Any?
 }
