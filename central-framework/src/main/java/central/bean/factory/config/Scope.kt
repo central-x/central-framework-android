@@ -7,7 +7,7 @@ package central.bean.factory.config
  * @since 2022/12/21
  */
 @MustBeDocumented
-@Target(AnnotationTarget.FUNCTION, AnnotationTarget.TYPE)
+@Target(AnnotationTarget.FUNCTION, AnnotationTarget.TYPE, AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.RUNTIME)
 annotation class Scope(
     /**

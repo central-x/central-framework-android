@@ -22,17 +22,34 @@
  * SOFTWARE.
  */
 
-package central.bean.context
+package central.bean.factory.config
 
 /**
- * 应用事件
+ * 作用域范围
+ *
+ * 这里只声明了内置的作用域范围，开发者还可以指定其它的作用域范围
  *
  * @author Alan Yeh
- * @since 2023/01/31
+ * @since 2023/02/22
  */
-interface ApplicationEvent {
-    /**
-     * 事件源
-     */
-    val source: Any
+interface ScopeTarget {
+    companion object {
+        /**
+         * 单例
+         * 每次返回相同实例
+         */
+        const val SINGLETON = "singleton"
+
+        /**
+         * 原型
+         * 每次返回新的实例
+         */
+        const val PROTOTYPE = "prototype"
+
+        /**
+         * 线程范围
+         * 相同线程返回同一实例，不同线程返回不同实例
+         */
+        const val THREAD = "thread"
+    }
 }
