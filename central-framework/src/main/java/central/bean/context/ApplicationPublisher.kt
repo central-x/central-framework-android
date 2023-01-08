@@ -30,7 +30,7 @@ package central.bean.context
  * @author Alan Yeh
  * @since 2023/01/31
  */
-interface ApplicationEventPublisher {
+interface ApplicationPublisher {
 
     /**
      * 发布事件

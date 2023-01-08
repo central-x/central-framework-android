@@ -26,11 +26,11 @@ package central.android.context
 
 import central.android.env.AndroidEnvironment
 import central.bean.context.ApplicationEvent
-import central.bean.context.ApplicationEventPublisher
 import central.bean.context.ApplicationListener
+import central.bean.context.ApplicationPublisher
 import central.bean.context.ConfigurableApplicationContext
 import central.bean.context.event.ContextRefreshedEvent
-import central.bean.context.support.GenericApplicationEventPublisher
+import central.bean.context.support.GenericApplicationPublisher
 import central.bean.factory.BeanException
 import central.bean.factory.ConfigurableBeanFactory
 import central.bean.factory.Prioritized
@@ -69,7 +69,7 @@ open class AndroidApplicationContext : ConfigurableApplicationContext {
             // 注册 BeanPostProcessor
             this.registerBeanPostProcessors()
             // 初始化事件分发器
-            this.initApplicationEventPublisher()
+            this.initApplicationPublisher()
             // 初始化其它 Bean
             this.onRefresh()
             // 注册事件监听器
@@ -170,15 +170,15 @@ open class AndroidApplicationContext : ConfigurableApplicationContext {
     /**
      * 初始化事件分发器
      */
-    private fun initApplicationEventPublisher() {
-        val applicationEventPublisher = this.beanFactory.getBean("applicationEventPublisher", ApplicationEventPublisher::class.java)
-        if (applicationEventPublisher == null) {
+    private fun initApplicationPublisher() {
+        val applicationPublisher = this.beanFactory.getBean("applicationPublisher", ApplicationPublisher::class.java)
+        if (applicationPublisher == null) {
             // 标准事件广播器
-            this.applicationEventPublisher = GenericApplicationEventPublisher(this.beanFactory)
-            this.beanFactory.registerSingleton("applicationEventPublisher", this.applicationEventPublisher)
+            this.applicationPublisher = GenericApplicationPublisher(this.beanFactory)
+            this.beanFactory.registerSingleton("applicationPublisher", this.applicationPublisher)
         } else {
             // 支持用户自定义事件广播器
-            this.applicationEventPublisher = applicationEventPublisher
+            this.applicationPublisher = applicationPublisher
         }
     }
 
@@ -188,7 +188,7 @@ open class AndroidApplicationContext : ConfigurableApplicationContext {
     private fun registerListeners() {
         val listenerBeanNames = this.beanFactory.getBeanNamesForType(ApplicationListener::class.java, true, false)
         for (name in listenerBeanNames) {
-            this.applicationEventPublisher.addApplicationListenerBean(name)
+            this.applicationPublisher.addApplicationListenerBean(name)
         }
     }
 
@@ -254,14 +254,14 @@ open class AndroidApplicationContext : ConfigurableApplicationContext {
     override fun isTypeMatch(name: String, type: Class<*>): Boolean = this.beanFactory.isTypeMatch(name, type)
 
     /////////////////////////////////////////////////////////////////////////////////////
-    // ApplicationEventPublisher
+    // ApplicationPublisher
 
-    private lateinit var applicationEventPublisher: ApplicationEventPublisher
+    private lateinit var applicationPublisher: ApplicationPublisher
 
-    override fun publishEvent(event: ApplicationEvent) = this.applicationEventPublisher.publishEvent(event)
-    override fun addApplicationListener(listener: ApplicationListener<*>) = this.applicationEventPublisher.addApplicationListener(listener)
-    override fun addApplicationListenerBean(listenerBeanName: String) = this.applicationEventPublisher.addApplicationListenerBean(listenerBeanName)
-    override fun removeApplicationListener(listener: ApplicationListener<*>) = this.applicationEventPublisher.removeApplicationListener(listener)
-    override fun removeApplicationListenerBean(listenerBeanName: String) = this.applicationEventPublisher.removeApplicationListenerBean(listenerBeanName)
-    override fun removeAllListeners() = this.applicationEventPublisher.removeAllListeners()
+    override fun publishEvent(event: ApplicationEvent) = this.applicationPublisher.publishEvent(event)
+    override fun addApplicationListener(listener: ApplicationListener<*>) = this.applicationPublisher.addApplicationListener(listener)
+    override fun addApplicationListenerBean(listenerBeanName: String) = this.applicationPublisher.addApplicationListenerBean(listenerBeanName)
+    override fun removeApplicationListener(listener: ApplicationListener<*>) = this.applicationPublisher.removeApplicationListener(listener)
+    override fun removeApplicationListenerBean(listenerBeanName: String) = this.applicationPublisher.removeApplicationListenerBean(listenerBeanName)
+    override fun removeAllListeners() = this.applicationPublisher.removeAllListeners()
 }

@@ -33,4 +33,4 @@ import central.env.EnvironmentCapable
  * @author Alan Yeh
  * @since 2023/01/19
  */
-interface ApplicationContext : BeanFactory, ApplicationEventPublisher, EnvironmentCapable
+interface ApplicationContext : BeanFactory, ApplicationPublisher, EnvironmentCapable

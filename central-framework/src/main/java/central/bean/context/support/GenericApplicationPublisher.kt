@@ -25,8 +25,8 @@
 package central.bean.context.support
 
 import central.bean.context.ApplicationEvent
-import central.bean.context.ApplicationEventPublisher
 import central.bean.context.ApplicationListener
+import central.bean.context.ApplicationPublisher
 import central.bean.factory.BeanFactory
 
 /**
@@ -35,7 +35,7 @@ import central.bean.factory.BeanFactory
  * @author Alan Yeh
  * @since 2023/02/06
  */
-class GenericApplicationEventPublisher(private val beanFactory: BeanFactory): ApplicationEventPublisher {
+class GenericApplicationPublisher(private val beanFactory: BeanFactory): ApplicationPublisher {
     override fun publishEvent(event: ApplicationEvent) {
     }
 
