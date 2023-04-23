@@ -25,8 +25,8 @@
 package central.util
 
 import central.lang.reflect.TypeReference
+import central.util.json.GsonSerializer
 import central.util.json.JsonSerializer
-import central.util.json.KotlinSerializer
 import java.io.InputStream
 import java.io.OutputStream
 import java.nio.charset.Charset
@@ -41,7 +41,7 @@ import java.nio.charset.StandardCharsets
 class Jsonx() {
     companion object {
         @JvmStatic
-        private val serializer: JsonSerializer = KotlinSerializer()
+        private val serializer: JsonSerializer = GsonSerializer()
 
         /**
          * 将对象序列化成 Json 字符串

@@ -140,7 +140,7 @@ class Assetsx {
                         val bufferedOutput = output.buffered()
 
                         val buffer = ByteArray(DEFAULT_BUFFER_SIZE)
-                        var length = 0
+                        var length: Int
                         do {
                             length = bufferedInput.read(buffer, 0, DEFAULT_BUFFER_SIZE)
                             if (length <= 0) {

@@ -45,7 +45,7 @@ abstract class TypeReference<T>(
     type: Type? = null
 ) {
 
-    private val type: Type
+    val type: Type
 
     init {
         if (type != null) {

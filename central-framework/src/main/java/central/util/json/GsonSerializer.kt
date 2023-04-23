@@ -22,56 +22,38 @@
  * SOFTWARE.
  */
 
-package central.util
+package central.util.json
 
 import central.lang.reflect.TypeReference
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNotNull
-import org.junit.Test
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
+import java.io.InputStream
+import java.io.InputStreamReader
+import java.io.OutputStream
+import java.io.OutputStreamWriter
+import java.nio.charset.Charset
 
 /**
- * Jsonx Test Cases
+ * Gson 序列化实现
  *
  * @author Alan Yeh
- * @since 2023/01/05
+ * @since 2023/04/23
  */
-class TestJsonx {
+class GsonSerializer : JsonSerializer {
 
-    @Test
-    fun case1() {
-        val record = Record().apply {
-            name = "张三"
-            age = 18
+    override fun serialize(any: Any, output: OutputStream, charset: Charset, formatted: Boolean) {
+        val gson = if (formatted) {
+            GsonBuilder().setPrettyPrinting().create()
+        } else {
+            Gson()
         }
-
-        val json = Jsonx.serialize(record)
-
-        assertEquals(
-            """
-            {"name":"张三","age":18}
-        """.trimIndent(), json
-        )
+        val writer = OutputStreamWriter(output, charset)
+        gson.toJson(any, writer)
+        writer.flush()
     }
 
-    @Test
-    fun case2() {
-        val record = Record().apply {
-            name = "张三"
-            age = 18
-        }
-
-        val json = Jsonx.serialize(listOf(record))
-        val list = Jsonx.deserialize(TypeReference.ofList(Record::class.java), json)
-
-        assertNotNull(list)
-        assertEquals(1, list.size)
-        assertEquals(record.name, list.first().name)
-        assertEquals(record.age, list.first().age)
-    }
-
-    class Record {
-        var name: String? = null
-
-        var age: Int? = null
+    override fun <T> deserialize(reference: TypeReference<T>, input: InputStream, charset: Charset): T {
+        val gson = Gson()
+        return gson.fromJson(InputStreamReader(input, charset), reference.type)
     }
 }
