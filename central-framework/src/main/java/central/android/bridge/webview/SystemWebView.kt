@@ -32,7 +32,18 @@ import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import android.webkit.*
+import android.webkit.CookieManager
+import android.webkit.JsPromptResult
+import android.webkit.JsResult
+import android.webkit.MimeTypeMap
+import android.webkit.ValueCallback
+import android.webkit.WebChromeClient
+import android.webkit.WebResourceError
+import android.webkit.WebResourceRequest
+import android.webkit.WebResourceResponse
+import android.webkit.WebSettings
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import android.widget.EditText
 import androidx.core.net.toFile
 import central.android.Assetsx
@@ -91,10 +102,9 @@ class SystemWebView(context: Context, attrs: AttributeSet?) : WebView(context, a
             loadWithOverviewMode = true
             useWideViewPort = true
 
-            val userAgent = StringBuilder(userAgentString + " Bridge/" + BuildConfig.VERSION)
-
-            // 添加 USER AGENT
-            userAgentString = userAgent.toString()
+            // 修改 USER AGENT
+            context.packageManager
+            userAgentString = "$userAgentString Bridge/${BuildConfig.VERSION}"
 
             // 禁止文字跟随系统字体缩放
             textZoom = 100
@@ -128,8 +138,6 @@ class SystemWebView(context: Context, attrs: AttributeSet?) : WebView(context, a
             override fun onPageFinished(view: WebView, url: String) {
                 view.evaluateJavascript("document.documentElement.style.webkitUserSelect='none'") {}
                 view.evaluateJavascript("document.documentElement.style.webkitTouchCallout='none'") {}
-                // 为 Android WebView 添加 AudioSession 补丁，用于挟持 HTMLAudioElement 对象的 play、pause 方法
-                view.evaluateJavascript("let script = document.createElement('script');script.src='res:///audiosession-android-patch.js';(document.getElementsByTagName('head'))[0].appendChild(script);"){}
 
                 super.onPageFinished(view, url)
                 webViewEventListener?.onPageFinished(URL(url))
@@ -310,6 +318,7 @@ class SystemWebView(context: Context, attrs: AttributeSet?) : WebView(context, a
                     return WebResourceResponse(mimeType, StandardCharsets.UTF_8.name(), 404, "NOT FOUND", emptyMap(), ByteArrayInputStream(ByteArray(0)))
                 }
             }
+
             "file" -> {
                 // 加载 file 资源
                 var mimeType: String? = null
@@ -328,6 +337,7 @@ class SystemWebView(context: Context, attrs: AttributeSet?) : WebView(context, a
                     return WebResourceResponse(mimeType, StandardCharsets.UTF_8.name(), 404, "NOT FOUND", emptyMap(), ByteArrayInputStream(ByteArray(0)))
                 }
             }
+
             else -> null
         }
     }
